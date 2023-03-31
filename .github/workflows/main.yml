@@ -1,0 +1,135 @@
+name: API CI
+on:
+  workflow_dispatch:
+env:
+    AWS_REGION: us-east-1
+    ECR_REPOSITORY: mrworldwide_api
+    ECS_SERVICE: mrworldwide-api
+    ECS_CLUSTER: mrworldwide
+    ECS_TASK_DEFINITION: aws-dev-api-task-definition.json
+    
+    CONTAINER_NAME: mrworldwide_api 
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        environment: Release
+        steps:
+        - 
+            name: Checkout
+            uses: actions/checkout@v2
+        -
+            name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v2
+        -
+            name: Build and Export Image
+            uses: docker/build-push-action@v3
+            with:
+                context: .
+                file: ./server/src/ProjectName.WebServer/Dockerfile
+                tags: mrworldwide_api:latest
+                outputs: type=docker,dest=/tmp/mrworldwide_api.tar
+                build-args: |
+                    CONFIGURATION=Release
+        -
+            name: Upload Artifact
+            uses: actions/upload-artifact@v3
+            with:
+                name: mrworldwide_api
+                path: /tmp/mrworldwide_api.tar
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+        -
+            name: Checkout
+            uses: actions/checkout@v2
+        -
+            name: Setup .NET
+            uses: actions/setup-dotnet@v1
+            with:
+                dotnet-version: '6.0.x'
+        -
+            name: Install PostgreSQL
+            run: sudo apt-get -yqq install postgresql
+        -
+            name: Setup PostgreSQL
+            run: |
+                sudo systemctl start postgresql
+                sudo -u postgres psql -c "CREATE DATABASE testdb;"
+                sudo -u postgres psql -c "CREATE USER testuser WITH PASSWORD 'testpassword';"
+                sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;"
+                echo "CONNECTION_STRINGS_DEFAULT_CONNECTION=Host=localhost;Database=testdb;Username=testuser;Password=testpassword" >> $GITHUB_ENV
+        -
+            name: Restore dependencies
+            run: dotnet restore ./server/ProjectName.WebServer.sln
+        -
+            name: Build
+            run: dotnet build ./server/ProjectName.WebServer.sln --configuration Release --no-restore
+        -
+            name: Test
+            env:
+                ASPNETCORE_ENVIRONMENT: tests
+            run: dotnet test ./server/ProjectName.WebServer.sln --configuration Release --no-build --verbosity normal
+    deploy:
+        name: Deploy
+        runs-on: ubuntu-latest
+        needs: [build, test]
+        steps:
+        - 
+            name: Checkout
+            uses: actions/checkout@v2
+        - 
+            name: Set Up Docker Buildx
+            uses: docker/setup-buildx-action@v2
+        -
+            name: Download Artifact
+            uses: actions/download-artifact@v3
+            with:
+                name: mrworldwide_api
+                path: /tmp
+        -
+            name: Load Image
+            run: |
+                docker load --input /tmp/mrworldwide_api.tar
+                docker image ls -a
+        -
+            name: Configure AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v1
+            with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: ${{ env.AWS_REGION }}
+        -
+            name: Login to Amazon ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@v1
+        -
+            name: Tag and Push Image to Amazon ECR
+            id: push-image
+            env:
+                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                IMAGE_TAG: ${{ github.sha }}
+            run: |
+                docker tag mrworldwide_api:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+                echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        -
+            name: Update Task Definition
+            id: task-def
+            uses: aws-actions/amazon-ecs-render-task-definition@v1
+            with:
+                task-definition: ${{ env.ECS_TASK_DEFINITION }}
+                container-name: ${{ env.CONTAINER_NAME }}
+                image: ${{ steps.push-image.outputs.image }}
+                environment-variables: |
+                    ${{ secrets.AWS_CONNECTION_STRING }}
+        -
+            name: Deploy Amazon ECS task definition
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+            with:
+                task-definition: ${{ steps.task-def.outputs.task-definition }}
+                service: ${{ env.ECS_SERVICE }}
+                cluster: ${{ env.ECS_CLUSTER }}
+                wait-for-service-stability: false
+
