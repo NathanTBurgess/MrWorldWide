@@ -1,0 +1,54 @@
+# .gitignore
+
+# JetBrains IDE files
+.idea/
+*.iml
+
+# C# build output
+server/**/bin/
+server/**/obj/
+
+# Visual Studio temporary files
+*.user
+*.suo
+*.cache
+*.pidb
+*.vshost.*
+*_i.c
+*_p.c
+*.ncb
+*.bak
+*.swp
+*.log
+
+# NuGet packages
+packages/
+
+# React build and node_modules
+app/build/
+app/node_modules/
+
+# React environment variables
+app/.env.local
+app/.env.development
+app/.env.test
+app/.env.production
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.swp
+*.bak
+
