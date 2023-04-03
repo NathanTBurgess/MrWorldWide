@@ -25,7 +25,7 @@ jobs:
             name: Build and Export Image
             uses: docker/build-push-action@v3
             with:
-                context: ./server/src/
+                context: ./server/src
                 file: ./MrWorldwide.WebApi/Dockerfile
                 tags: mrworldwide_api:latest
                 outputs: type=docker,dest=/tmp/mrworldwide_api.tar
