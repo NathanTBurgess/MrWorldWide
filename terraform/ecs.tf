@@ -15,8 +15,8 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name  = "webserver"
-      image = "${aws_ecr_repository.app.repository_url}:latest"
+      name         = "webserver"
+      image        = "${aws_ecr_repository.app.repository_url}:latest"
       portMappings = [
         {
           containerPort = 80
@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "app" {
       ]
       logConfiguration = {
         logDriver = "awslogs"
-        options = {
+        options   = {
           "awslogs-region"        = "us-east-1"
           "awslogs-group"         = aws_cloudwatch_log_group.app.name
           "awslogs-stream-prefix" = "webserver"
@@ -36,7 +36,25 @@ resource "aws_ecs_task_definition" "app" {
   ])
 }
 
-# ECS Service
+## ECS Service
+resource "aws_security_group" "app_sg" {
+  name_prefix = "mrworldwide-today-"
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "mrworldwide-today-app-sg"
+  }
+}
 resource "aws_ecs_service" "app" {
   name            = "mrworldwide-today-service"
   cluster         = aws_ecs_cluster.app.id
@@ -46,7 +64,8 @@ resource "aws_ecs_service" "app" {
   desired_count = 1
 
   network_configuration {
-    subnets = aws_default_subnet.default.*.id
+    subnets         = aws_default_subnet.default.*.id
+    security_groups = [aws_security_group.app_sg.id]
   }
 
   load_balancer {
@@ -95,7 +114,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   threshold           = "75"
   alarm_description   = "This metric checks for high CPU utilization"
   alarm_actions       = [] # Add SNS topic ARN here to send notifications
-  dimensions = {
+  dimensions          = {
     ClusterName = aws_ecs_cluster.app.name
     ServiceName = aws_ecs_service.app.name
   }
@@ -112,7 +131,7 @@ resource "aws_cloudwatch_metric_alarm" "health_check" {
   threshold           = 1
   alarm_description   = "This metric checks if there are no healthy hosts based on the /health endpoint"
   alarm_actions       = [] # Add SNS topic ARN here to send notifications
-  dimensions = {
+  dimensions          = {
     LoadBalancer = aws_lb.app.name
     TargetGroup  = aws_lb_target_group.app.name
   }

@@ -1,8 +1,11 @@
 # CloudFront Distribution
+locals {
+  s3_origin_id = "S3-mrworldwide-today-webapp"
+}
 resource "aws_cloudfront_distribution" "web_app" {
   origin {
-    domain_name = aws_s3_bucket.web_app.bucket_regional_domain_name
-    origin_id   = "S3-mrworldwide-today-webapp"
+    domain_name = aws_s3_bucket.web_app.bucket_domain_name
+    origin_id   = local.s3_origin_id
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.web_app.cloudfront_access_identity_path
@@ -18,8 +21,7 @@ resource "aws_cloudfront_distribution" "web_app" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-
-    target_origin_id = "S3-mrworldwide-today-webapp"
+    target_origin_id = local.s3_origin_id
 
     forwarded_values {
       query_string = false
@@ -44,7 +46,7 @@ resource "aws_cloudfront_distribution" "web_app" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate_validation.wildcard.certificate_arn
+    acm_certificate_arn      = data.aws_acm_certificate.wildcard.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2018"
   }

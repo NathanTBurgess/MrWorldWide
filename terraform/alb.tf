@@ -49,7 +49,7 @@ resource "aws_lb_listener" "https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn   = aws_acm_certificate_validation.wildcard.certificate_arn
+  certificate_arn   = data.aws_acm_certificate.wildcard.arn
 
   default_action {
     type             = "forward"
@@ -62,6 +62,7 @@ resource "aws_lb_target_group" "app" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_default_vpc.default.id
+  target_type = "ip"
   health_check {
     protocol            = "HTTP"
     path                = "/health"
@@ -73,8 +74,8 @@ resource "aws_lb_target_group" "app" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "app" {
-  target_group_arn = aws_lb_target_group.app.arn
-  target_id        = aws_ecs_service.app.id
-  port             = 80
-}
+#resource "aws_lb_target_group_attachment" "app" {
+#  target_group_arn = aws_lb_target_group.app.arn
+#  target_id        = aws_ecs_service.app.id
+#  port             = 80
+#}

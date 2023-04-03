@@ -1,6 +1,6 @@
 # S3 Bucket for hosting React web app
 resource "aws_s3_bucket" "web_app" {
-  bucket = "mrworldwide-today-webapp"
+  bucket = "www.mrworldwide.today"
 }
 
 resource "aws_s3_bucket_website_configuration" "web_app" {
@@ -11,7 +11,7 @@ resource "aws_s3_bucket_website_configuration" "web_app" {
   }
 
   error_document {
-    key = "error.html"
+    key = "index.html"
   }
 }
 
