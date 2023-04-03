@@ -6,33 +6,15 @@ namespace MrWorldwide.WebApi
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.Console(new RenderedCompactJsonFormatter())
-                .CreateLogger();
-
-            try
-            {
-                Log.Information("Starting web host");
-                CreateHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Host terminated unexpectedly");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
+        public static async Task Main(string[] args)
+            => await CreateHostBuilder(args).Build().RunAsync();
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+                .UseSerilog((ctx, lc) =>
+                {
+                    lc.ReadFrom.Configuration(ctx.Configuration);
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

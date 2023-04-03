@@ -16,7 +16,7 @@ function TopNavPopupMenu({ edge }: TopNavPopupMenuProps) {
 
     function handleClick(target: string) {
         close();
-        navigate(target);
+        //navigate(target);
     }
 
     return (
@@ -46,8 +46,8 @@ function TopNavPopupMenu({ edge }: TopNavPopupMenuProps) {
                 open={isOpen}
                 onClose={close}
             >
-                <TopNavMenuItem onClick={() => handleClick("area1")} icon={<QuestionMarkIcon />} title={"Area1"} />
-                <TopNavMenuItem onClick={() => handleClick("area2")} icon={<QuestionMarkIcon />} title={"Area2"} />
+                <TopNavMenuItem onClick={() => handleClick("area1")} icon={<QuestionMarkIcon />} title={"Nothing Here Yet"} />
+                {/*<TopNavMenuItem onClick={() => handleClick("area2")} icon={<QuestionMarkIcon />} title={"Area2"} />*/}
             </Menu>
         </>
     );

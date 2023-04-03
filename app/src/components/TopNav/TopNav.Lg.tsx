@@ -17,16 +17,16 @@ function TopNavLg() {
                 <Toolbar>
                     <Stack direction={"row"} spacing={5}>
                         <TopNavMenuItem title={""} icon={<HomeIcon/>} onClick={() => navigate("/")}/>
-                        <Button color={"secondary"} onClick={() => navigate("area1")}>
-                            Area1
-                        </Button>
-                        <Button color={"secondary"} onClick={() => navigate("area2")}>
-                            Area2
-                        </Button>
+                        {/*<Button color={"secondary"} onClick={() => navigate("area1")}>*/}
+                        {/*    Area1*/}
+                        {/*</Button>*/}
+                        {/*<Button color={"secondary"} onClick={() => navigate("area2")}>*/}
+                        {/*    Area2*/}
+                        {/*</Button>*/}
                     </Stack>
-                    <Box display={"flex"} flexDirection={"row"} justifyContent={"end"} width={"100%"}>
-                        <TopNavUserMenu />
-                    </Box>
+                    {/*<Box display={"flex"} flexDirection={"row"} justifyContent={"end"} width={"100%"}>*/}
+                    {/*    <TopNavUserMenu />*/}
+                    {/*</Box>*/}
                 </Toolbar>
             </AppBar>
         </Box>

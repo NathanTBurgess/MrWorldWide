@@ -4,6 +4,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrWorldwide.WebApi", "MrWor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrWorldwide.Tests", "MrWorldwide.Tests\MrWorldwide.Tests.csproj", "{FF83F8AD-0066-4A88-9FED-CF0C20C796E8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DAF56C26-1F66-4F16-A162-AEF1C8EBBB6C}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+		..\aws-mrworldwide-task-definition.json = ..\aws-mrworldwide-task-definition.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

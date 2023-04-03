@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
 env:
     AWS_REGION: us-east-1
-    ECR_REPOSITORY: mrworldwide_api
-    ECS_SERVICE: mrworldwide-api
-    ECS_CLUSTER: mrworldwide
-    ECS_TASK_DEFINITION: aws-dev-api-task-definition.json
+    ECR_REPOSITORY: mrworldwide-today
+    ECS_SERVICE: mrworldwide-today-service
+    ECS_CLUSTER: mrworldwide-today-cluster
+    ECS_TASK_DEFINITION: ./server/aws-mrworldwide-task-definition.json
     
     CONTAINER_NAME: mrworldwide_api 
 jobs:
@@ -26,7 +26,7 @@ jobs:
             uses: docker/build-push-action@v3
             with:
                 context: .
-                file: ./server/src/ProjectName.WebServer/Dockerfile
+                file: ./server/src/MrWorldwide.WebApi/Dockerfile
                 tags: mrworldwide_api:latest
                 outputs: type=docker,dest=/tmp/mrworldwide_api.tar
                 build-args: |
@@ -62,15 +62,15 @@ jobs:
                 echo "CONNECTION_STRINGS_DEFAULT_CONNECTION=Host=localhost;Database=testdb;Username=testuser;Password=testpassword" >> $GITHUB_ENV
         -
             name: Restore dependencies
-            run: dotnet restore ./server/ProjectName.WebServer.sln
+            run: dotnet restore ./server/src/MrWorldwide.sln
         -
             name: Build
-            run: dotnet build ./server/ProjectName.WebServer.sln --configuration Release --no-restore
+            run: dotnet build ./server/src/MrWorldwide.sln --configuration Release --no-restore
         -
             name: Test
             env:
                 ASPNETCORE_ENVIRONMENT: tests
-            run: dotnet test ./server/ProjectName.WebServer.sln --configuration Release --no-build --verbosity normal
+            run: dotnet test ./server/src/MrWorldwide.sln --configuration Release --no-build --verbosity normal
     deploy:
         name: Deploy
         runs-on: ubuntu-latest
@@ -123,7 +123,7 @@ jobs:
                 container-name: ${{ env.CONTAINER_NAME }}
                 image: ${{ steps.push-image.outputs.image }}
                 environment-variables: |
-                    ${{ secrets.AWS_CONNECTION_STRING }}
+                    ConnectionStrings:DefaultConnection=${{ secrets.AWS_POSTGRES_CONNECTION_STRING }}
         -
             name: Deploy Amazon ECS task definition
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1

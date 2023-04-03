@@ -1,0 +1,71 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "webserver",
+            "image": "602199015882.dkr.ecr.us-east-1.amazonaws.com/mrworldwide-today:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "mrworldwide-today",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "webserver"
+                }
+            }
+        }
+    ],
+    "family": "mrworldwide-today",
+    "taskRoleArn": "arn:aws:iam::602199015882:role/ecs_task_role",
+    "executionRoleArn": "arn:aws:iam::602199015882:role/ecs_execution_role",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "tags": []
+}

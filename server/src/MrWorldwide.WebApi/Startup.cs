@@ -1,5 +1,6 @@
 ﻿using Marten;
 using MrWorldwide.WebApi.Infrastructure.ExceptionHandling;
+using Weasel.Core;
 
 namespace MrWorldwide.WebApi
 {
@@ -29,12 +30,17 @@ namespace MrWorldwide.WebApi
                     x.IncludeExceptionDetails();
                 }
             });
+            services.AddSwaggerGen();
             services.AddControllers();
-            services.AddMarten(connectionString);
+            services.AddMarten(options =>
+            {
+                options.Connection(connectionString);
+                options.AutoCreateSchemaObjects = AutoCreate.All;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IDocumentSession session)
         {
             app.UseExceptionHandler();
             if (_environment.IsDevelopment())
@@ -48,8 +54,15 @@ namespace MrWorldwide.WebApi
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
         }
     }
+}
+
+public class TestObj
+{
+    public int Id { get; set; }
+    public string Message { get; set; }
 }

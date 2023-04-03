@@ -19,7 +19,7 @@ function TopNavXS() {
                     <Grid item>
                         <Stack direction={"row"} spacing={1}>
                             <TopNavMenuItem title={""} icon={<HomeIcon/>} onClick={() => navigate("/")}/>
-                            <TopNavUserMenu/>
+                            {/*<TopNavUserMenu/>*/}
                         </Stack>
                     </Grid>
                 </Grid>
