@@ -1,6 +1,5 @@
 # IAM Roles
 resource "aws_iam_role" "ecs_execution_role" {
-  provider = aws.new_account
   name = "ecs_execution_role"
 
   assume_role_policy = jsonencode({
@@ -18,13 +17,11 @@ resource "aws_iam_role" "ecs_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execution_role" {
-  provider = aws.new_account
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   role       = aws_iam_role.ecs_execution_role.name
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-  provider = aws.new_account
   name = "ecs_task_role"
 
   assume_role_policy = jsonencode({
@@ -43,7 +40,6 @@ resource "aws_iam_role" "ecs_task_role" {
 
 # IAM Role for GitHub CI
 resource "aws_iam_role" "github_ci" {
-  provider = aws.new_account
   name = "github_ci_role"
 
   assume_role_policy = jsonencode({
@@ -61,7 +57,6 @@ resource "aws_iam_role" "github_ci" {
 }
 
 resource "aws_iam_role_policy" "github_ci_policy" {
-  provider = aws.new_account
   name = "github_ci_policy"
   role = aws_iam_role.github_ci.id
 

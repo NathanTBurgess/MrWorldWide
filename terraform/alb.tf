@@ -1,6 +1,5 @@
 # Security group for ALB
 resource "aws_security_group" "alb" {
-  provider = aws.new_account
   name        = "alb"
   description = "Allow inbound traffic to ALB"
 
@@ -21,7 +20,6 @@ resource "aws_security_group" "alb" {
 
 # Application Load Balancer
 resource "aws_lb" "app" {
-  provider = aws.new_account
   name               = "mrworldwide-today-alb"
   internal           = false
   load_balancer_type = "application"
@@ -31,7 +29,6 @@ resource "aws_lb" "app" {
 }
 
 resource "aws_lb_listener" "http" {
-  provider = aws.new_account
   load_balancer_arn = aws_lb.app.arn
   port              = 80
   protocol          = "HTTP"
@@ -48,7 +45,6 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_lb_listener" "https" {
-  provider = aws.new_account
   load_balancer_arn = aws_lb.app.arn
   port              = 443
   protocol          = "HTTPS"
@@ -62,7 +58,6 @@ resource "aws_lb_listener" "https" {
 }
 
 resource "aws_lb_target_group" "app" {
-  provider = aws.new_account
   name     = "mrworldwide-today"
   port     = 80
   protocol = "HTTP"
@@ -79,7 +74,6 @@ resource "aws_lb_target_group" "app" {
 }
 
 resource "aws_lb_target_group_attachment" "app" {
-  provider = aws.new_account
   target_group_arn = aws_lb_target_group.app.arn
   target_id        = aws_ecs_service.app.id
   port             = 80

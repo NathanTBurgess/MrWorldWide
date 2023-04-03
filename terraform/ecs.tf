@@ -1,12 +1,10 @@
 # ECS Cluster
 resource "aws_ecs_cluster" "app" {
-  provider = aws.new_account
   name = "mrworldwide-today-cluster"
 }
 
 # ECS Task Definition
 resource "aws_ecs_task_definition" "app" {
-  provider = aws.new_account
   family                   = "mrworldwide-today"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
@@ -40,7 +38,6 @@ resource "aws_ecs_task_definition" "app" {
 
 # ECS Service
 resource "aws_ecs_service" "app" {
-  provider = aws.new_account
   name            = "mrworldwide-today-service"
   cluster         = aws_ecs_cluster.app.id
   task_definition = aws_ecs_task_definition.app.arn
@@ -61,7 +58,6 @@ resource "aws_ecs_service" "app" {
 
 # ECS Autoscaling
 resource "aws_appautoscaling_target" "app" {
-  provider = aws.new_account
   service_namespace  = "ecs"
   scalable_dimension = "ecs:service:DesiredCount"
   resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
@@ -70,7 +66,6 @@ resource "aws_appautoscaling_target" "app" {
 }
 
 resource "aws_appautoscaling_policy" "app_cpu" {
-  provider = aws.new_account
   name               = "cpu_scaling_policy"
   service_namespace  = aws_appautoscaling_target.app.service_namespace
   scalable_dimension = aws_appautoscaling_target.app.scalable_dimension

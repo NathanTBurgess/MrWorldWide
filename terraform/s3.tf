@@ -1,11 +1,21 @@
 # S3 Bucket for hosting React web app
 resource "aws_s3_bucket" "web_app" {
-  provider = aws.new_account
   bucket = "mrworldwide-today-webapp"
 }
 
+resource "aws_s3_bucket_website_configuration" "web_app" {
+  bucket = aws_s3_bucket.web_app.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "web_app" {
-  provider = aws.new_account
   bucket = aws_s3_bucket.web_app.id
 
   block_public_acls   = false
@@ -14,23 +24,12 @@ resource "aws_s3_bucket_public_access_block" "web_app" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_website" "web_app" {
-  provider = aws.new_account
-  bucket = aws_s3_bucket.web_app.id
-
-  index_document = "index.html"
-  error_document = "error.html"
-}
-
-
 # S3 Bucket for user-driven blob storage
 resource "aws_s3_bucket" "blob_storage" {
-  provider = aws.new_account
   bucket = "mrworldwide-today-blob-storage"
 }
 
 resource "aws_s3_bucket_public_access_block" "blob_storage" {
-  provider = aws.new_account
   bucket = aws_s3_bucket.blob_storage.id
 
   block_public_acls   = true
@@ -40,7 +39,6 @@ resource "aws_s3_bucket_public_access_block" "blob_storage" {
 }
 
 resource "aws_s3_bucket_policy" "web_app" {
-  provider = aws.new_account
   bucket = aws_s3_bucket.web_app.id
 
   policy = jsonencode({

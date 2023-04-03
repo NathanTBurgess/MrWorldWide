@@ -1,6 +1,5 @@
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "web_app" {
-  provider = aws.new_account
   origin {
     domain_name = aws_s3_bucket.web_app.bucket_regional_domain_name
     origin_id   = "S3-mrworldwide-today-webapp"
@@ -52,6 +51,5 @@ resource "aws_cloudfront_distribution" "web_app" {
 }
 
 resource "aws_cloudfront_origin_access_identity" "web_app" {
-  provider = aws.new_account
   comment = "Origin access identity for mrworldwide-today-webapp"
 }
