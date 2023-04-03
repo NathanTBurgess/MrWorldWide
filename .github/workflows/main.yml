@@ -25,8 +25,8 @@ jobs:
             name: Build and Export Image
             uses: docker/build-push-action@v3
             with:
-                context: .
-                file: ./server/src/MrWorldwide.WebApi/Dockerfile
+                context: ./server/src/
+                file: ./MrWorldwide.WebApi/Dockerfile
                 tags: mrworldwide_api:latest
                 outputs: type=docker,dest=/tmp/mrworldwide_api.tar
                 build-args: |
@@ -48,7 +48,7 @@ jobs:
             name: Setup .NET
             uses: actions/setup-dotnet@v1
             with:
-                dotnet-version: '6.0.x'
+                dotnet-version: '7.0.x'
         -
             name: Install PostgreSQL
             run: sudo apt-get -yqq install postgresql
