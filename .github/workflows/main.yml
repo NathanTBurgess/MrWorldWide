@@ -8,7 +8,7 @@ env:
     ECS_CLUSTER: mrworldwide-today-cluster
     ECS_TASK_DEFINITION: ./server/aws-mrworldwide-task-definition.json
     
-    CONTAINER_NAME: mrworldwide_api 
+    CONTAINER_NAME: webserver 
 jobs:
     build:
         name: Build
