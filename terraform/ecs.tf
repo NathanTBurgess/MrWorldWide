@@ -64,6 +64,7 @@ resource "aws_ecs_service" "app" {
   desired_count = 1
 
   network_configuration {
+    assign_public_ip = true
     subnets         = aws_default_subnet.default.*.id
     security_groups = [aws_security_group.app_sg.id]
   }

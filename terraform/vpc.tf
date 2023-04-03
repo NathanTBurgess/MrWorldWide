@@ -1,7 +1,6 @@
 # Default VPC and Subnets
 resource "aws_default_vpc" "default" {
 }
-
 data "aws_availability_zones" "available" {
   state = "available"
 }

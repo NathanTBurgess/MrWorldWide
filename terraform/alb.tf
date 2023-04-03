@@ -16,6 +16,13 @@ resource "aws_security_group" "alb" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 # Application Load Balancer
@@ -73,9 +80,3 @@ resource "aws_lb_target_group" "app" {
     matcher             = "200"
   }
 }
-
-#resource "aws_lb_target_group_attachment" "app" {
-#  target_group_arn = aws_lb_target_group.app.arn
-#  target_id        = aws_ecs_service.app.id
-#  port             = 80
-#}
