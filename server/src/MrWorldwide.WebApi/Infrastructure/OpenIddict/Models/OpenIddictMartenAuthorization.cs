@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Marten.Events.CodeGeneration;
 using Marten.Metadata;
 
 namespace MrWorldwide.WebApi.Infrastructure.OpenIddict.Models;
@@ -34,15 +35,13 @@ public class OpenIddictMartenAuthorization<TKey, TApplication, TToken> : IVersio
     /// Gets or sets the additional properties serialized as a JSON object,
     /// or <see langword="null"/> if no bag was associated with the current authorization.
     /// </summary>
-    [StringSyntax(StringSyntaxAttribute.Json)]
-    public virtual string? Properties { get; set; }
+    public virtual string[] Properties { get; set; }
 
     /// <summary>
     /// Gets or sets the scopes associated with the current
     /// authorization, serialized as a JSON array.
     /// </summary>
-    [StringSyntax(StringSyntaxAttribute.Json)]
-    public virtual string? Scopes { get; set; }
+    public virtual string[] Scopes { get; set; }
 
     /// <summary>
     /// Gets or sets the status of the current authorization.
@@ -57,8 +56,10 @@ public class OpenIddictMartenAuthorization<TKey, TApplication, TToken> : IVersio
     /// <summary>
     /// Gets the list of tokens associated with the current authorization.
     /// </summary>
+    [MartenIgnore]
     public virtual ICollection<TToken> Tokens { get; set; } = new HashSet<TToken>();
-
+    [MartenIgnore]
+    public OpenIddictMartenApplication Application { get; set; }
     /// <summary>
     /// Gets or sets the type of the current authorization.
     /// </summary>
