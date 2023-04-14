@@ -3,10 +3,10 @@ import { createTheme } from "@mui/material";
 export const defaultTheme = createTheme({
     palette: {
         background: {
-            default: "#ffffff",
+            default: "#f5f5f5", // Lighter background color
         },
         primary: {
-            main: "#3F51B5",
+            main: "#283593", // Darker primary color
             light: "#C5CAE9",
             dark: "#303F9F",
             contrastText: "#FFFFFF",
@@ -17,6 +17,18 @@ export const defaultTheme = createTheme({
             dark: "#ffffff",
             contrastText: "#FFFFFF",
         },
+        error: {
+            main: "#f44336",
+        },
+        info: {
+            main: "#2196f3",
+        },
+        success: {
+            main: "#4caf50",
+        },
+        warning: {
+            main: "#ff9800",
+        }
     },
     typography: {
         fontSize: 12,
@@ -26,5 +38,6 @@ export const defaultTheme = createTheme({
             fontSize: "14px",
             lineHeight: "16px",
         },
-    },
+    }
+
 });

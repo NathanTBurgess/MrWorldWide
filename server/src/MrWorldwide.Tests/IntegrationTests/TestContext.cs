@@ -12,13 +12,11 @@ namespace MrWorldwide.Tests.IntegrationTests;
 public class TestContext
 {
     private static IntegrationTestsApplication _application;
-    public static IDocumentStore Store { get; private set; }
     public static TestServer TestServer { get; private set; }
     [OneTimeSetUp]
     public void SetUpIntegrationTests()
     {
         _application = new IntegrationTestsApplication();
-        Store = _application.Services.GetRequiredService<IDocumentStore>();
         TestServer = _application.Server;
     }
     [OneTimeTearDown]

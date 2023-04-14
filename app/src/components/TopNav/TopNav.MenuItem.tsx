@@ -1,10 +1,11 @@
-import React, { ReactNode } from "react";
-import { Badge, BadgeProps, ListItemIcon, ListItemText, MenuItem, Typography } from "@mui/material";
+import React, {ReactNode} from "react";
+import {Badge, BadgeProps, ListItemIcon, ListItemText, MenuItem, Tooltip, Typography} from "@mui/material";
 
 export interface AuthMenuItemProps {
     title: string;
     icon: ReactNode;
     badge?: BadgeProps;
+    tooltip?: string;
 
     onClick(): void | Promise<void>;
 }
@@ -12,18 +13,20 @@ export interface AuthMenuItemProps {
 export function TopNavMenuItem(props: AuthMenuItemProps) {
     return (
         <>
-            <MenuItem onClick={props.onClick}>
-                <ListItemIcon>
-                    {props.badge ? (
-                        <Badge {...props.badge}>
-                            <Typography>{props.icon}</Typography>
-                        </Badge>
-                    ) : (
-                        props.icon
-                    )}
-                </ListItemIcon>
-                <ListItemText>{props.title}</ListItemText>
-            </MenuItem>
+            <Tooltip title={props.tooltip}>
+                <MenuItem onClick={props.onClick}>
+                    <ListItemIcon>
+                        {props.badge ? (
+                            <Badge {...props.badge}>
+                                <Typography>{props.icon}</Typography>
+                            </Badge>
+                        ) : (
+                            props.icon
+                        )}
+                    </ListItemIcon>
+                    <ListItemText>{props.title}</ListItemText>
+                </MenuItem>
+            </Tooltip>
         </>
     );
 }
