@@ -1,15 +1,16 @@
-﻿using Marten;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace MrWorldwide.Tests.IntegrationTests;
 
 public abstract class IntegrationTest
 {
-    protected IDocumentSession DocumentSession;
+    protected IServiceScope Scope;
+
     [SetUp]
-    public void SetUpBaseTest() => 
-        DocumentSession = TestContext.Store.LightweightSession();
+    public void SetUpBaseTest() =>
+        Scope = TestContext.TestServer.Services.CreateScope();
 
     [TearDown]
-    public void TearDownBaseTest() => 
-        DocumentSession.Dispose();
+    public void TearDownBaseTest() =>
+        Scope.Dispose();
 }

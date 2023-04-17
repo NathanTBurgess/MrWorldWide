@@ -5,7 +5,7 @@ import TopNavPopupMenu from "./TopNav.PopupMenu";
 import TopNavUserMenu from "./TopNav.UserMenu";
 import {useNavigate} from "react-router-dom";
 import {TopNavMenuItem} from "./TopNav.MenuItem";
-import HomeIcon from '@mui/icons-material/Home';
+import LockPersonIcon from '@mui/icons-material/LockPerson';
 
 function TopNavXS() {
     const navigate = useNavigate();
@@ -18,7 +18,8 @@ function TopNavXS() {
                     </Grid>
                     <Grid item>
                         <Stack direction={"row"} spacing={1}>
-                            <TopNavMenuItem title={""} icon={<HomeIcon/>} onClick={() => navigate("/")}/>
+                            <TopNavMenuItem title={""} tooltip={"Jackson, that you?"}
+                                            icon={<LockPersonIcon color={"secondary"}/>} onClick={() => navigate("login")}/>
                             {/*<TopNavUserMenu/>*/}
                         </Stack>
                     </Grid>

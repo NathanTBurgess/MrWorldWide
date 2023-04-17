@@ -8,6 +8,10 @@
 server/**/bin/
 server/**/obj/
 
+# C# developmer settings
+appsettings.[dD]evelopment.json
+
+
 # Visual Studio temporary files
 *.user
 *.suo

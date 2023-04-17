@@ -1,0 +1,13 @@
+# /app/.dockerignore
+node_modules
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.dockerignore
+.git
+.gitignore
+README.md
+LICENSE
+.vscode
+__tests__
+

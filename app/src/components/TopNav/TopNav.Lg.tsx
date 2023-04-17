@@ -7,8 +7,7 @@ import TopNavUserMenu from "./TopNav.UserMenu";
 import { useNavigate } from "react-router-dom";
 import { Stack } from "@mui/material";
 import {TopNavMenuItem} from "./TopNav.MenuItem";
-import HomeIcon from "@mui/icons-material/Home";
-
+import LockPersonIcon from '@mui/icons-material/LockPerson';
 function TopNavLg() {
     const navigate = useNavigate();
     return (
@@ -16,7 +15,7 @@ function TopNavLg() {
             <AppBar position="static">
                 <Toolbar>
                     <Stack direction={"row"} spacing={5}>
-                        <TopNavMenuItem title={""} icon={<HomeIcon/>} onClick={() => navigate("/")}/>
+                        <TopNavMenuItem title={""} icon={<LockPersonIcon/>} onClick={() => navigate("/")}/>
                         {/*<Button color={"secondary"} onClick={() => navigate("area1")}>*/}
                         {/*    Area1*/}
                         {/*</Button>*/}
