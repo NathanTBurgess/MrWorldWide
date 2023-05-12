@@ -1,7 +1,6 @@
 // src/SeqLogProvider.tsx
-import {Logger as SeqLoggingLogger} from "seq-logging";
+import {Logger as SeqLoggingLogger, SeqLogLevel} from "seq-logging";
 import {LogLevel} from "../LogLevel";
-import {structureLog} from "../loggingHelpers";
 import {LoggingAdapter} from "../LoggingAdapter";
 
 interface SeqLoggerConfiguration {
@@ -29,17 +28,48 @@ export default class SeqLogger implements LoggingAdapter {
 
     name = "Seq";
 
-    log(level: LogLevel, rawMessage: TemplateStringsArray,
-        ...properties: string[]): void {
-        if (level < this.currentLogLevel) {
-            return;
+    log(level: LogLevel, messageTemplateArray: string[], templateVals: { [p: string]: string }): void {
+        let messageTemplate = "";
+        let templateItem = false;
+        for (const messageTemplateElement of messageTemplateArray) {
+            if (templateItem) {
+                messageTemplate += '{';
+            }
+            messageTemplate += messageTemplateElement;
+            if (templateItem) {
+                messageTemplate += '}';
+            }
+            templateItem = !templateItem;
         }
-        const structuredLog = structureLog(rawMessage, ...properties)
+        let logLevel: SeqLogLevel;
+        switch (level) {
+            case LogLevel.Trace:
+                logLevel = "Verbose";
+                break;
+            case LogLevel.Debug:
+                logLevel = "Debug";
+                break;
+            case LogLevel.Information:
+                logLevel = "Information";
+                break;
+            case LogLevel.Warning:
+                logLevel = "Warning";
+                break;
+            case LogLevel.Error:
+                logLevel = "Error"
+                break;
+            case LogLevel.Critical:
+                logLevel = "Fatal";
+                break;
+            case LogLevel.None:
+                return;
+
+        }
         this.seqLogger.emit({
             timestamp: new Date(),
-            level: level.toString(),
-            messageTemplate: structuredLog.messageTemplate,
-            properties: structuredLog.properties
+            level: logLevel,
+            messageTemplate,
+            properties: templateVals
         })
     }
 }

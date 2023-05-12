@@ -35,9 +35,9 @@ function LoggingProvider({loggers, children}: LoggingProviderProps) {
         const names = adapters.map(x => x.name);
         for (const loadedLogger of adapters) {
             const logger = new Logger(loadedLogger);
-            logger.debug`Initializing Logging Providers...`
+            logger.debug(`Initializing Logging Providers...`, {})
             for (const loggerName of names) {
-                logger.debug`${loggerName} loaded`;
+                logger.debug('${loggerName} loaded', {loggerName});
             }
         }
     }, []);

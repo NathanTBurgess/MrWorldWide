@@ -1,31 +1,32 @@
 import {LoggingAdapter} from "./LoggingAdapter";
 import {LogLevel} from "./LogLevel";
+import {parseTemplateLikeString} from "./loggingHelpers";
 
 export class Logger {
     constructor(private readonly adapter: LoggingAdapter) {
     }
-    debug(message: TemplateStringsArray,
-          ...properties: string[]): void{
-        this.adapter.log(LogLevel.Debug, message, ...properties);
+    debug(messageTemplate: string, properties: {[key: string]: string}): void{
+        const templateLike = parseTemplateLikeString(messageTemplate);
+        this.adapter.log(LogLevel.Debug, templateLike, properties);
+    }
+    info(messageTemplate: string, properties: {[key: string]: string}): void{
+        const templateLike = parseTemplateLikeString(messageTemplate);
+        this.adapter.log(LogLevel.Information, templateLike, properties);
     }
 
-    info(message: TemplateStringsArray,
-         ...properties: string[]): void{
-        this.adapter.log(LogLevel.Information, message, ...properties);
+    warn(messageTemplate: string, properties: {[key: string]: string}): void{
+        const templateLike = parseTemplateLikeString(messageTemplate);
+        this.adapter.log(LogLevel.Warning, templateLike, properties);
     }
 
-    warn(message: TemplateStringsArray,
-         ...properties: string[]): void{
-        this.adapter.log(LogLevel.Warning, message, ...properties);
+    error(messageTemplate: string, properties: {[key: string]: string}): void{
+        const templateLike = parseTemplateLikeString(messageTemplate);
+        this.adapter.log(LogLevel.Error, templateLike, properties);
     }
 
-    error(message: TemplateStringsArray,
-          ...properties: string[]): void{
-        this.adapter.log(LogLevel.Error, message, ...properties);
+    critical(messageTemplate: string, properties: {[key: string]: string}): void{
+        const templateLike = parseTemplateLikeString(messageTemplate);
+        this.adapter.log(LogLevel.Critical, templateLike, properties);
     }
 
-    critical(message: TemplateStringsArray,
-             ...properties: string[]): void{
-        this.adapter.log(LogLevel.Critical, message, ...properties);
-    }
 }

@@ -27,13 +27,13 @@ const loggers: LoggerTypes[] = [
     {
         logger: new SeqLogger({
             logLevel,
-            serverUrl: "http://seq:80"
+            serverUrl: "http://localhost:5341"
         }),
         devOnly: true
     }
 ]
 root.render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <LoggingProvider loggers={loggers}>
             <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={"en-us"}>
                 <ThemeProvider theme={defaultTheme}>
@@ -48,7 +48,7 @@ root.render(
                 </ThemeProvider>
             </LocalizationProvider>
         </LoggingProvider>
-    </React.StrictMode>
+    /*</React.StrictMode>*/
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -1,5 +1,6 @@
 import {LogLevel} from "../LogLevel";
 import {LoggingAdapter} from "../LoggingAdapter";
+import {object} from "yup";
 
 export interface ConsoleLoggerConfiguration {
     logLevel?: LogLevel;
@@ -31,16 +32,22 @@ function formatLogLevel(level: LogLevel): string {
     }
 }
 
-// Utility function to style the message
-function styleMessage(rawMessage: TemplateStringsArray): string {
+function styleMessage(messageTemplateArray: string[], templateProperties: {[key: string]: string}): string {
     let styledMessage = "";
+    let templated = true;
+    for (let i = 0; i < messageTemplateArray.length; i++) {
+        if(templated){
+            styledMessage += messageTemplateArray[i];
+        }
+        else{
+            const key = messageTemplateArray[i];
+            styledMessage += templateProperties[key];
+        }
 
-    for (let i = 0; i < rawMessage.length; i++) {
-        styledMessage += rawMessage[i];
-
-        if (i < rawMessage.length - 1) {
+        if (i < messageTemplateArray.length - 1) {
             styledMessage += "%c";
         }
+        templated = !templated;
     }
 
     return styledMessage;
@@ -76,29 +83,26 @@ function consoleArgumentStyle(isNumber: boolean): string {
 
 export default class ConsoleLogger implements LoggingAdapter {
     private readonly currentLogLevel: LogLevel;
-
     constructor(private readonly configuration: ConsoleLoggerConfiguration) {
         this.currentLogLevel = configuration.logLevel ?? LogLevel.Debug;
     }
 
-
     name = "Console";
 
-    log(level: LogLevel, rawMessage: TemplateStringsArray,
-        ...properties: string[]): void {
+
+    log(level: LogLevel, messageTemplateArray: string[], templateVals: { [p: string]: string }): void {
         if (level < this.currentLogLevel) {
             return;
         }
         const timestamp = formatTimestamp(new Date());
         const levelString = formatLogLevel(level);
-        const message = styleMessage(rawMessage);
-
+        const message = styleMessage(messageTemplateArray, templateVals);
         console.log(
             `[${timestamp} %c${levelString}%c] ${message}`,
             ...[
                 consoleLogLevelStyle(level),
                 defaultStyle,
-                ...properties.flatMap((prop) => [
+                ...Object.keys(templateVals).flatMap((prop) => [
                     consoleArgumentStyle(!isNaN(parseFloat(prop))),
                     defaultStyle
                 ])
