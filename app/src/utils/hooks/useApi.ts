@@ -1,6 +1,8 @@
-import { useSnackbar } from "../snackbar";
-import { isAxiosError } from "../guards/isAxiosError";
-import { isApiError } from "../guards/isApiError";
+import {useSnackbar} from "../snackbar";
+import {isAxiosError} from "../guards/isAxiosError";
+import {isProblemDetails} from "../guards";
+import {ProblemDetails} from "../../domain/models";
+import {useLogger} from "../logging";
 
 export interface ProvidedErrorMessagingMethods {
     invoke: <T>(p: Promise<T>, success?: string) => Promise<T>;
@@ -8,6 +10,7 @@ export interface ProvidedErrorMessagingMethods {
 
 export const useApi = (): ProvidedErrorMessagingMethods => {
     const showMessage = useSnackbar();
+    const logger = useLogger();
     const invoke = <T>(promise: Promise<T>, success?: string) => {
         return promise
             .then((result: T) => {
@@ -23,13 +26,16 @@ export const useApi = (): ProvidedErrorMessagingMethods => {
             .catch((error) => {
                 let message: string;
                 if (isAxiosError(error)) {
-                    if (error.response?.data && isApiError(error.response?.data)) {
-                        message = error.response.data.message;
+                    if (error.response?.data && isProblemDetails(error.response?.data)) {
+                        message = error.response.data.detail;
+                        logger.error(error.response.data as ProblemDetails, 'The API Server has reported an error');
                     } else {
                         message = error.message;
+                        logger.error(error, 'An error occurred while attempting to communicate with the API.')
                     }
                 } else {
                     message = "An unknown error has occurred.";
+                    logger.error(error, message);
                 }
                 showMessage({
                     position: "BottomCenter",
@@ -40,5 +46,5 @@ export const useApi = (): ProvidedErrorMessagingMethods => {
             });
     };
 
-    return { invoke };
+    return {invoke};
 };

@@ -9,7 +9,7 @@ server/**/bin/
 server/**/obj/
 
 # C# developmer settings
-appsettings.[dD]evelopment.json
+server/**/appsettings.[dD]evelopment.json
 
 
 # Visual Studio temporary files

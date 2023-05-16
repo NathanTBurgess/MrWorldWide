@@ -8,7 +8,7 @@ public static class EndpointBuilderExtensions
 {
     public static IEndpointConventionBuilder MapGoogleLogin(this IEndpointRouteBuilder builder)
     {
-        return builder.MapPost("authorizations/google",
+        return builder.MapPost("api/authorizations/google",
             async (TokenRequest request, IOptions<AuthorizationOptions> options) =>
             {
                 if (string.IsNullOrEmpty(request.IdToken))
@@ -41,9 +41,9 @@ public static class EndpointBuilderExtensions
 
         var identity = new ClaimsIdentity(new []
         {
-            new Claim(ClaimTypes.NameIdentifier, payload.Subject),
-            new Claim(ClaimTypes.Name, payload.Name),
-            new Claim(ClaimTypes.Email, payload.Email)
+            new Claim("sub", payload.Subject),
+            new Claim("name", payload.Name),
+            new Claim("email", payload.Email)
         });
 
         return Results.SignIn(new ClaimsPrincipal(identity));

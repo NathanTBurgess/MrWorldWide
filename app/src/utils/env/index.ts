@@ -3,3 +3,4 @@
  */
 
 export * from "./isDevelopment";
+export * from "./useApiArea";

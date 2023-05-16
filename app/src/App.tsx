@@ -3,13 +3,12 @@ import AppRoutes from "./App.Routes";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 
 function App() {
-    // const oidcEnvironmentConfig = useOidcEnvironmentConfiguration();
+
+    const clientId = process.env["REACT_APP_GOOGLE_CLIENT_ID"] ?? "";
     return (
-        // <AuthProvider {...oidcEnvironmentConfig}>
-        <GoogleOAuthProvider clientId={""}>
+        <GoogleOAuthProvider clientId={clientId}>
             <AppRoutes/>
         </GoogleOAuthProvider>
-        ///*</AuthProvider>*/
     );
 }
 

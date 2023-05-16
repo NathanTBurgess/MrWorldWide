@@ -37,7 +37,7 @@ function LoggingProvider({loggers, children}: LoggingProviderProps) {
             const logger = new Logger(loadedLogger);
             logger.debug(`Initializing Logging Providers...`, {})
             for (const loggerName of names) {
-                logger.debug('${loggerName} loaded', {loggerName});
+                logger.debug('{loggerName} loaded', {loggerName});
             }
         }
     }, []);

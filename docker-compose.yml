@@ -2,45 +2,46 @@
 version: "3.9"
 
 services:
-  postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Password
-      POSTGRES_DB: mrworldwide
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
+  # postgres:
+    # image: postgres:13
+    # environment:
+      # POSTGRES_USER: postgres
+      # POSTGRES_PASSWORD: Password
+      # POSTGRES_DB: mrworldwide
+    # volumes:
+      # - postgres-data:/var/lib/postgresql/data
 
   seq:
     image: datalust/seq:latest
     environment:
       - ACCEPT_EULA=Y
     ports:
-      - "5341:80"
+      - "5341:5341"
+      - "5342:80"
 
-  mrworldwide_webapi:
-    build:
-      context: ./server/src
-      dockerfile: MrWorldwide.WebApi/Dockerfile
-    depends_on:
-      - postgres
-      - seq
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=postgres;Database=mrworldwide;User Id=postgres;Password=Password;
+  # mrworldwide_webapi:
+    # build:
+      # context: ./server/src
+      # dockerfile: MrWorldwide.WebApi/Dockerfile
+    # depends_on:
+      # - postgres
+      # - seq
+    # environment:
+      # - ConnectionStrings__DefaultConnection=Server=postgres;Database=mrworldwide;User Id=postgres;Password=Password;
 
-  mrworldwide_app:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./app/src:/src
-      - ./app/public:/public
-      - /node_modules
-    depends_on:
-      - mrworldwide_webapi
-      - seq
+  # mrworldwide_app:
+    # build:
+      # context: ./app
+      # dockerfile: Dockerfile
+    # ports:
+      # - "3000:3000"
+    # volumes:
+      # - ./app/src:/src
+      # - ./app/public:/public
+      # - /node_modules
+    # depends_on:
+      # - mrworldwide_webapi
+    #  - seq
 
 volumes:
   postgres-data:

@@ -1,19 +1,19 @@
 // src/useLogger.ts
-import { useContext } from "react";
-import { LoggerContext } from "./LoggerContext";
-import { LogLevel } from "./LogLevel";
-import {Logger} from "./Logger";
-import {LoggingAdapter} from "./LoggingAdapter";
-import {parseTemplateLikeString} from "./loggingHelpers";
+import {useContext} from "react";
+import {LoggerContext} from "./LoggerContext";
+import {ErrorTypes, ILogger, Logger} from "./Logger";
 
-export function useLogger(): Logger {
+export function useLogger(): ILogger {
     const loggingAdapters = useContext(LoggerContext);
-    const log = (level: LogLevel, messageTemplate: string, properties: {[key: string]: string}): void => {
-        loggingAdapters.forEach((logger) => logger.log(level, parseTemplateLikeString(messageTemplate), properties));
+    const loggers = loggingAdapters.map(x => new Logger(x));
+    return {
+        debug: (messageTemplate, properties) =>
+            loggers.forEach(x => x.debug(messageTemplate, properties ?? {})),
+        error: (error: ErrorTypes, messageTemplate: string, properties: { [p: string]: string }) =>
+            loggers.forEach(x => x.error(error, messageTemplate ?? "", properties ?? {})),
+        info: (messageTemplate, properties) =>
+            loggers.forEach(x => x.info(messageTemplate, properties ?? {})),
+        warn: (messageTemplate, properties) =>
+            loggers.forEach(x => x.warn(messageTemplate, properties ?? {})),
     };
-    const logAllAdapter: LoggingAdapter = {
-        log: (message)=> console.log(message),
-        name: "All"
-    };
-    return new Logger(logAllAdapter);
 }
