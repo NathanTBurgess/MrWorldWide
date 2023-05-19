@@ -1,27 +1,19 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 import axios from "axios";
-import { useAuth } from "./useAuth";
+import {useLogger} from "../logging";
+import {useToken} from "./TokenProvider";
 
 function AxiosConfig() {
-    const { userManager } = useAuth();
+    const {token} = useToken();
+    const logger = useLogger(AxiosConfig);
     useEffect(() => {
-        userManager.getUser().then((user) => {
-            if (user) {
-                axios.defaults.headers.common = { Authorization: `Bearer ${user.access_token}` };
-            }
-        });
-        userManager.events.addUserLoaded(SetAxiosHeader);
-        return () => {
-            userManager.events.removeUserLoaded(SetAxiosHeader);
-        };
-    }, []);
-
-    async function SetAxiosHeader() {
-        const user = await userManager.getUser();
-        if (user) {
-            axios.defaults.headers.common = { Authorization: `Bearer ${user.access_token}` };
+        if (token) {
+            axios.defaults.headers.common = {Authorization: `Bearer ${token}`};
+        } else {
+            axios.defaults.headers.common = {};
         }
-    }
+    }, [token]);
+
 
     return null;
 }

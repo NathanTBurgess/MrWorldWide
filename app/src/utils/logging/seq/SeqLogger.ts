@@ -2,6 +2,7 @@
 import {Logger as SeqLoggingLogger, SeqLogLevel} from "seq-logging";
 import {LogLevel} from "../LogLevel";
 import {LoggingAdapter} from "../LoggingAdapter";
+import {LoggerType} from "../useLogger";
 
 interface SeqLoggerConfiguration {
     serverUrl: string;
@@ -28,7 +29,7 @@ export default class SeqLogger implements LoggingAdapter {
 
     name = "Seq";
 
-    log(level: LogLevel, messageTemplateArray: string[], templateVals: { [p: string]: string }): void {
+    log(level: LogLevel, type: string, messageTemplateArray: string[], templateVals: { [p: string]: string }): void {
         let messageTemplate = "";
         let templateItem = false;
         for (const messageTemplateElement of messageTemplateArray) {
@@ -41,6 +42,7 @@ export default class SeqLogger implements LoggingAdapter {
             }
             templateItem = !templateItem;
         }
+        templateVals['callSource'] = type.toString();
         let logLevel: SeqLogLevel;
         switch (level) {
             case LogLevel.Trace:

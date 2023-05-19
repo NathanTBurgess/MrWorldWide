@@ -12,17 +12,19 @@ export interface ApiArea {
 }
 
 export function useApiArea(area: string): ApiArea {
-    const baseUrl = path.join(apiBase as string, area);
+    const baseUrl = new URL(area, apiBase);
     return {
-        baseUrl,
+        baseUrl: baseUrl.href,
         urlForEndpoint: (endpoint, routeParameters) => urlForEndpoint(baseUrl, endpoint, routeParameters)
     };
 }
 
-function urlForEndpoint(baseUrl: string, endpoint: string, ...routeParameters: {[key: string]: RouteParameterTypes}[]): string{
+function urlForEndpoint(url: URL, endpoint: string, ...routeParameters: {[key: string]: RouteParameterTypes}[]): string{
     const routeParametersObject = mergeParameters(...routeParameters);
     const endpointPath = buildTemplatedRoute(endpoint, routeParametersObject);
-    return path.join(baseUrl, endpointPath);
+    const endpointUrl = new URL(url);// {...url, pathname:  path.join(url.pathname, endpointPath)};
+    endpointUrl.pathname = path.join(url.pathname, endpointPath);
+    return endpointUrl.href;
 }
 
 function buildTemplatedRoute(endpoint: string, routeParameters: {[key: string]: RouteParameterTypes}): string {

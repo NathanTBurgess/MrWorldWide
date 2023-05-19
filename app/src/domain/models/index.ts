@@ -3,3 +3,4 @@
  */
 
 export * from "./ProblemDetails";
+export * from "./TokenModel";

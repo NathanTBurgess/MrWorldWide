@@ -1,17 +1,22 @@
-export class CustomEventMethods {
+import {User} from "../auth";
+
+export type CustomEventArgs<T = undefined> = Event & { detail: T };
+export type CustomEventListener<T = undefined> = (e: CustomEventArgs<T>) => void;
+
+export class CustomEventMethods<T = undefined> {
     constructor(private readonly type: string) {
     }
 
-    addListener(callbackFn: EventListenerOrEventListenerObject) {
-        window.addEventListener(this.type, callbackFn);
+    addListener(callbackFn: CustomEventListener<T>) {
+        window.addEventListener(this.type, callbackFn as EventListener);
     }
 
-    removeListener(callbackFn: EventListenerOrEventListenerObject) {
-        window.removeEventListener(this.type, callbackFn);
+    removeListener(callbackFn: CustomEventListener<T>) {
+        window.removeEventListener(this.type, callbackFn as EventListener);
     }
 
-    dispatch<T>(eventInitDict?: CustomEventInit<T | null>): void{
-        const event = new CustomEvent(this.type, eventInitDict);
+    dispatch(eventInitDict: CustomEventInit<T>): void{
+        const event = new CustomEvent<T>(this.type, eventInitDict);
         window.dispatchEvent(event);
     }
 }

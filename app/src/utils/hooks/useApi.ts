@@ -10,7 +10,7 @@ export interface ProvidedErrorMessagingMethods {
 
 export const useApi = (): ProvidedErrorMessagingMethods => {
     const showMessage = useSnackbar();
-    const logger = useLogger();
+    const logger = useLogger(useApi);
     const invoke = <T>(promise: Promise<T>, success?: string) => {
         return promise
             .then((result: T) => {
@@ -27,7 +27,7 @@ export const useApi = (): ProvidedErrorMessagingMethods => {
                 let message: string;
                 if (isAxiosError(error)) {
                     if (error.response?.data && isProblemDetails(error.response?.data)) {
-                        message = error.response.data.detail;
+                        message = error.response.data.title;
                         logger.error(error.response.data as ProblemDetails, 'The API Server has reported an error');
                     } else {
                         message = error.message;

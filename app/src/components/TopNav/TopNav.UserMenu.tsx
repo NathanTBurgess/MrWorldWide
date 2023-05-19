@@ -12,9 +12,8 @@ import { TopNavMenuItem } from "./TopNav.MenuItem";
 function TopNavUserMenu() {
     const { open, close, isOpen, anchorEl } = useMenu();
     const {
-        user,
-        loading,
-        userManager: { signoutRedirect, signinRedirect },
+        userManager: { signout, silentRefresh },
+        ...authState
     } = useAuth();
     return (
         <>
@@ -42,20 +41,20 @@ function TopNavUserMenu() {
                 open={isOpen}
                 onClose={close}
             >
-                {user && (
+                {authState.isAuthenticated && (
                     <MenuItem>
                         <ListItemIcon>
                             <PersonIcon />
                         </ListItemIcon>
-                        <ListItemText>{user.profile.name}</ListItemText>
+                        <ListItemText>{authState.user.name}</ListItemText>
                     </MenuItem>
                 )}
                 <AuthWrapper>
-                    <TopNavMenuItem onClick={signoutRedirect} icon={<LogoutIcon />} title={"Sign Out"} />
+                    <TopNavMenuItem onClick={signout} icon={<LogoutIcon />} title={"Sign Out"} />
                 </AuthWrapper>
-                {!user && !loading && (
-                    <TopNavMenuItem onClick={signinRedirect} icon={<LoginIcon />} title={"Sign In"} />
-                )}
+                {/*{!user && !loading && (*/}
+                {/*    <TopNavMenuItem onClick={silentRefresh} icon={<LoginIcon />} title={"Sign In"} />*/}
+                {/*)}*/}
             </Menu>
         </>
     );

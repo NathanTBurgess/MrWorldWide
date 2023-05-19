@@ -3,6 +3,7 @@ import {useSessionStorage} from "../hooks";
 import {ClaimsIdentity} from "./claims/ClaimsIdentity";
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {Claim} from "./claims/Claim";
+import {IdentityChangedEvent, TokenExpiringEvent} from "../events";
 
 
 export interface TokenProviderProps {
@@ -12,8 +13,9 @@ export interface TokenProviderProps {
 // Define the shape of the context
 export interface TokenContextProps {
     setToken: (accessToken: string) => void;
-    getToken: () => string | null;
-    getIdentity: () => ClaimsIdentity | null;
+    token: string | null;
+    identity: ClaimsIdentity | null;
+    clear: () => void;
 }
 
 const TokenContext = createContext<TokenContextProps | undefined>(undefined);
@@ -41,21 +43,21 @@ function TokenProvider({children, expiryThreshold = DEFAULT_EXPIRY_THRESHOLD}: T
         }
     }, [token]);
 
-    function handlePayload(token: JwtPayload): void{
-        const claims = Object.keys(token).map(key=>new Claim(key, token[key].toString()));
+    function handlePayload(token: JwtPayload): void {
+        const claims = Object.keys(token).map(key => new Claim(key, token[key].toString()));
         const identity = new ClaimsIdentity(claims);
         setIdentity(identity);
+        IdentityChangedEvent.dispatch({detail: identity});
         const exp = token.exp ? token.exp * 1000 : null;
         setExpiry(exp); // Convert to milliseconds
     }
 
     // Monitor for token expiration
     useEffect(() => {
-        if (expiry) {
+        if (token && expiry) {
             const timeoutId = setTimeout(() => {
                 // Broadcast a 'tokenExpiring' event
-                const event = new CustomEvent('tokenExpiring', {detail: token});
-                window.dispatchEvent(event);
+                TokenExpiringEvent.dispatch({detail: token});
             }, Math.max(0, expiry - Date.now() - expiryThreshold));
             return () => clearTimeout(timeoutId);
         }
@@ -70,17 +72,13 @@ function TokenProvider({children, expiryThreshold = DEFAULT_EXPIRY_THRESHOLD}: T
         handlePayload(decoded);
     };
 
+    const clear = () => {
+        setTokenInternal(null);
+    }
 
-    const getToken = () => {
-        return token;
-    };
-
-    const getIdentity = () => {
-        return identity;
-    };
 
     return (
-        <TokenContext.Provider value={{setToken, getToken, getIdentity}}>
+        <TokenContext.Provider value={{setToken, token, identity, clear}}>
             {children}
         </TokenContext.Provider>
     );

@@ -3,9 +3,15 @@ import {useContext} from "react";
 import {LoggerContext} from "./LoggerContext";
 import {ErrorTypes, ILogger, Logger} from "./Logger";
 
-export function useLogger(): ILogger {
+interface Type<T = any> extends Function {
+    new(...args: any[]): T;
+}
+
+export type LoggerType = string | symbol | Type | ((...args: any[])=> any);
+
+export function useLogger(type: LoggerType): ILogger {
     const loggingAdapters = useContext(LoggerContext);
-    const loggers = loggingAdapters.map(x => new Logger(x));
+    const loggers = loggingAdapters.map(x => new Logger(x, type));
     return {
         debug: (messageTemplate, properties) =>
             loggers.forEach(x => x.debug(messageTemplate, properties ?? {})),

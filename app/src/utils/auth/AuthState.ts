@@ -1,9 +1,4 @@
-import { User, UserManager } from "oidc-client-ts";
+import {UserManager} from "./UserManager";
+import {User} from "./User";
 
-export interface AuthState {
-    userManager: UserManager;
-    user: User | null;
-    isAuthenticated: boolean;
-    loading: boolean;
-    error?: unknown;
-}
+export type AuthState = { userManager: UserManager }  & ({isAuthenticated: false} | {isAuthenticated: true, user: User});

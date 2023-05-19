@@ -1,7 +1,9 @@
-import { Claim } from "./Claim";
-import { ClaimTypes } from "./ClaimTypes";
+import {Claim} from "./Claim";
+import {ClaimTypes} from "./ClaimTypes";
+import jwt from "jsonwebtoken";
 
 export type MatchClaim = (claim: Claim) => boolean;
+
 export class ClaimsIdentity {
     private _claims: Claim[] = [];
     nameClaimType: string = ClaimTypes.Name;
@@ -13,6 +15,15 @@ export class ClaimsIdentity {
             Array.isArray(claims) ? this._claims.push(...claims) : this._claims.push(claims);
         }
         this.issuer = this.findFirst(ClaimTypes.Issuer)?.value ?? "unknown";
+    }
+
+    static fromJwt(token: string): ClaimsIdentity {
+        const decoded = jwt.decode(token, {json: true});
+        if (decoded === null) {
+            throw new Error("Provided JWT could not be decoded");
+        }
+        const claims = Object.keys(decoded).map(key => new Claim(key, decoded[key].toString()));
+        return new ClaimsIdentity(claims);
     }
 
     public get claims(): ReadonlyArray<Claim> {
