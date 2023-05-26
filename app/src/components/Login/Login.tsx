@@ -7,30 +7,26 @@ import {isDevelopment} from "../../utils/env";
 
 
 function Login() {
-    const {userManager, ...authState} = useAuth();
+    const {actions, ...authState} = useAuth();
     const logger = useLogger(Login);
     const devMode = isDevelopment();
 
     async function handleSuccess(credentialResponse: CredentialResponse) {
         if (credentialResponse.credential) {
-            const result = await userManager.handleGoogleSso(credentialResponse.credential);
+            const result = await actions.handleGoogleSso(credentialResponse.credential);
             if (result.succeeded) {
-                logger.debug('User Login Successful! Hello {name} ({email})!', {
-                    name: result.user.name,
-                    email: result.user.email
-                });
+                logger.debug('User Login Successful!', {});
             } else {
                 logger.debug('Login failed');
             }
         }
     }
 
-    async function attemptRefresh(){
-        const result = await userManager.silentRefresh();
-        if(result.succeeded){
+    async function attemptRefresh() {
+        const result = await actions.silentRefresh();
+        if (result.succeeded) {
             logger.debug("Refresh Success!")
-        }
-        else{
+        } else {
             logger.debug("Refresh failure!")
         }
     }
@@ -47,10 +43,10 @@ function Login() {
                             {authState.isAuthenticated ?
                                 <>
                                     <Typography variant="body1" gutterBottom>
-                                        {`It looks like you're already signed in as ${authState.user.name}. Sign out?`}
-                                </Typography>
+                                        {`It looks like you're already signed in as ${authState.user.profile.name}. Sign out?`}
+                                    </Typography>
                                     <Box sx={{marginTop: 2, justifyContent: 'center', display: 'flex'}}>
-                                        <Button variant={"contained"} onClick={async ()=>await userManager.signout()}>
+                                        <Button variant={"contained"} onClick={async () => await actions.signout()}>
                                             Yea, sign me out
                                         </Button>
                                         {devMode &&

@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from "react";
 import axios, {AxiosError} from "axios";
 import {useAuth} from "./useAuth";
-import {SignInResult} from "./UserManager";
 import {useLogger} from "../logging";
 import {useToken} from "./TokenProvider";
+import {SignInResult} from "./AuthProvider";
 
 function SilentRefresh() {
-    const {userManager} = useAuth();
+    const {events, actions: {silentRefresh}} = useAuth();
     const {token} = useToken();
     const [refreshing, setRefreshing] = useState(false);
     const logger = useLogger(SilentRefresh);
     useEffect(() => {
-        userManager.events.addAccessTokenExpiring(onAccessTokenExpiring);
+        events.addAccessTokenExpiring(onAccessTokenExpiring);
         return () => {
-            userManager.events.removeAccessTokenExpiring(onAccessTokenExpiring);
+            events.removeAccessTokenExpiring(onAccessTokenExpiring);
         };
     }, []);
     useEffect(() => {
@@ -64,7 +64,7 @@ function SilentRefresh() {
         if (refreshing) return {succeeded: false};
         setRefreshing(true);
         try {
-            return await userManager.silentRefresh();
+            return await silentRefresh();
         } finally {
             setRefreshing(false);
         }

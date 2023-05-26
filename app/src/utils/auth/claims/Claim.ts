@@ -1,4 +1,4 @@
 export class Claim {
-    constructor(public type: string, public value: string) {
+    constructor(public key: string, public value: string) {
     }
 }

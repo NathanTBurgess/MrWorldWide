@@ -31,15 +31,15 @@ export class ClaimsIdentity {
     }
 
     public get name(): string | null {
-        return this.claims.find((x) => x.type === this.nameClaimType)?.value ?? null;
+        return this.claims.find((x) => x.key === this.nameClaimType)?.value ?? null;
     }
 
     public get id(): string | null {
-        return this.claims.find((x) => x.type === ClaimTypes.Subject)?.value ?? null;
+        return this.claims.find((x) => x.key === ClaimTypes.Subject)?.value ?? null;
     }
 
     public get email(): string | null {
-        return this.claims.find((x) => x.type === ClaimTypes.Email)?.value ?? null;
+        return this.claims.find((x) => x.key === ClaimTypes.Email)?.value ?? null;
     }
 
     public addClaim(claim: Claim): void {
@@ -51,7 +51,7 @@ export class ClaimsIdentity {
     }
 
     public get roles(): string[] {
-        return this.claims.filter((x) => x.type === this.rolesClaimType).map((x) => x.value);
+        return this.claims.filter((x) => x.key === this.rolesClaimType).map((x) => x.value);
     }
 
     public hasClaim(typeOrMatch: string | MatchClaim, value?: string) {
@@ -89,7 +89,7 @@ export class ClaimsIdentity {
         let matchNormalized: (claim: Claim) => boolean;
         typeof typeOrMatch === "function"
             ? (matchNormalized = typeOrMatch)
-            : (matchNormalized = (claim) => claim.type.toUpperCase() === typeOrMatch.toUpperCase());
+            : (matchNormalized = (claim) => claim.key.toUpperCase() === typeOrMatch.toUpperCase());
         return matchNormalized;
     }
 }

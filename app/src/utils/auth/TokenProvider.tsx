@@ -14,7 +14,7 @@ export interface TokenProviderProps {
 export interface TokenContextProps {
     setToken: (accessToken: string) => void;
     token: string | null;
-    identity: ClaimsIdentity | null;
+    jwtPayload : jwt.JwtPayload | null;
     clear: () => void;
 }
 
@@ -26,7 +26,7 @@ function TokenProvider({children, expiryThreshold = DEFAULT_EXPIRY_THRESHOLD}: T
     children: (ReactNode | ReactNode[])
 }) {
     const [token, setTokenInternal] = useSessionStorage('access_token');
-    const [identity, setIdentity] = useState<ClaimsIdentity | null>(null);
+    const jwtPayload = token ? jwt.decode(token, {json: true}): null;
     const [expiry, setExpiry] = useState<number | null>(null);
 
     // When the token changes, parse and set the claims
@@ -38,16 +38,11 @@ function TokenProvider({children, expiryThreshold = DEFAULT_EXPIRY_THRESHOLD}: T
             }
             handlePayload(decoded);
         } else {
-            setIdentity(null);
             setExpiry(null);
         }
     }, [token]);
 
     function handlePayload(token: JwtPayload): void {
-        const claims = Object.keys(token).map(key => new Claim(key, token[key].toString()));
-        const identity = new ClaimsIdentity(claims);
-        setIdentity(identity);
-        IdentityChangedEvent.dispatch({detail: identity});
         const exp = token.exp ? token.exp * 1000 : null;
         setExpiry(exp); // Convert to milliseconds
     }
@@ -78,7 +73,7 @@ function TokenProvider({children, expiryThreshold = DEFAULT_EXPIRY_THRESHOLD}: T
 
 
     return (
-        <TokenContext.Provider value={{setToken, token, identity, clear}}>
+        <TokenContext.Provider value={{setToken, token, clear, jwtPayload}}>
             {children}
         </TokenContext.Provider>
     );

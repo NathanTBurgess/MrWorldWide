@@ -12,7 +12,7 @@ import { TopNavMenuItem } from "./TopNav.MenuItem";
 function TopNavUserMenu() {
     const { open, close, isOpen, anchorEl } = useMenu();
     const {
-        userManager: { signout, silentRefresh },
+        actions: { signout, silentRefresh },
         ...authState
     } = useAuth();
     return (
@@ -46,7 +46,7 @@ function TopNavUserMenu() {
                         <ListItemIcon>
                             <PersonIcon />
                         </ListItemIcon>
-                        <ListItemText>{authState.user.name}</ListItemText>
+                        <ListItemText>{authState.user.profile.name}</ListItemText>
                     </MenuItem>
                 )}
                 <AuthWrapper>
