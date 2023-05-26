@@ -33,25 +33,50 @@ export interface AuthEvents {
 
     removeAccessTokenExpiring(callbackFn: CustomEventListener<string>): void;
 }
+
 export interface AuthActions {
     silentRefresh: () => Promise<SignInResult>;
     handleGoogleSso: (idToken: string) => Promise<SignInResult>;
     signout: () => Promise<void>;
 }
-export type AuthState = { events: AuthEvents, actions: AuthActions } & ({ isAuthenticated: false } | { isAuthenticated: true, user: User });
+
+export type AuthState = { events: AuthEvents, actions: AuthActions } &
+    ({ isReady: true } & ({ isAuthenticated: false } | { isAuthenticated: true, user: User }) |
+        { isReady: false, isAuthenticated: false });
 export const AuthContext = createContext<AuthState | null>(null);
 
 export interface User {
     accessToken: string;
     claims: ClaimsIdentity;
-    profile: Partial<{id: string, name: string, email: string}>;
-    metadata: Partial<{iat: string, aud: string, iss: string, exp: string}>;
+    profile: Partial<{ id: string, name: string, email: string }>;
+    metadata: Partial<{ iat: string, aud: string, iss: string, exp: string }>;
 }
 
 function AuthProvider({children}: { children: ReactNode }) {
     const {jwtPayload, token, clear, setToken} = useToken();
     const logger = useLogger(AuthProvider);
+    const [isReady, setIsReady] = useState(false);
     const [identity, setIdentity] = useState<ClaimsIdentity | null>(null);
+    useEffect(() => {
+        if (jwtPayload === null) {
+            setIdentity(null);
+        } else {
+            handleToken(jwtPayload);
+        }
+        if (!isReady) {
+            setIsReady(true);
+        }
+    }, [jwtPayload])
+    useEffect(() => {
+        if (user) {
+            logger.debug("User identity loaded. User Id: {id}. User Name: {name}. Email: {email}.",
+                {
+                    id: user.profile.id ?? '',
+                    name: user.profile.name ?? '',
+                    email: user.profile.email ?? ''
+                });
+        }
+    }, [identity])
     const user: User | null = (token && identity) ? {
         accessToken: token,
         claims: identity,
@@ -80,26 +105,10 @@ function AuthProvider({children}: { children: ReactNode }) {
         handleGoogleSso,
         signout
     }
-    const state: AuthState = user ?
-        {events, actions, isAuthenticated: true, user: user} :
-        {events, actions, isAuthenticated: false};
-    useEffect(() => {
-        if (jwtPayload === null) {
-            setIdentity(null);
-        } else {
-            handleToken(jwtPayload);
-        }
-    }, [jwtPayload])
-    useEffect(() => {
-        if (user) {
-            logger.debug("User identity loaded. User Id: {id}. User Name: {name}. Email: {email}.",
-                {
-                    id: user.profile.id ?? '',
-                    name: user.profile.name ?? '',
-                    email: user.profile.email ?? ''
-                });
-        }
-    }, [identity])
+    const state: AuthState = isReady ? (user ?
+            {events, actions, isReady, isAuthenticated: true, user: user} :
+            {events, actions, isReady, isAuthenticated: false}) :
+        {events, actions, isReady, isAuthenticated: false};
 
     function handleToken(token: JwtPayload) {
         logger.debug("Access token loaded, building new user profile")
@@ -108,6 +117,7 @@ function AuthProvider({children}: { children: ReactNode }) {
         setIdentity(claimsIdentity);
         IdentityChangedEvent.dispatch({detail: claimsIdentity});
     }
+
     async function handleGoogleSso(idToken: string): Promise<SignInResult> {
         const response = await AuthorizationsApi.authorizeGoogleSignin(idToken);
         if (!response.isSuccessStatusCode) {
@@ -121,6 +131,7 @@ function AuthProvider({children}: { children: ReactNode }) {
             succeeded: true
         };
     }
+
     async function signout(): Promise<void> {
         try {
             const response = await AuthorizationsApi.signout();

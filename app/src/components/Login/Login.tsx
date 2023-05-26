@@ -4,10 +4,11 @@ import {CredentialResponse, GoogleLogin} from '@react-oauth/google';
 import {useLogger} from "../../utils/logging";
 import {useAuth} from "../../utils/auth";
 import {isDevelopment} from "../../utils/env";
+import LoadingWrapper from "../UtilityWrappers/LoadingWrapper";
 
 
 function Login() {
-    const {actions, ...authState} = useAuth();
+    const {actions, isReady, ...authState} = useAuth();
     const logger = useLogger(Login);
     const devMode = isDevelopment();
 
@@ -32,6 +33,7 @@ function Login() {
     }
 
     return (
+        !isReady ? <LoadingWrapper loading={true}><Box /></LoadingWrapper> :
         <>
             <Container maxWidth="sm">
                 <Box sx={{textAlign: 'center', paddingTop: 4}}>
