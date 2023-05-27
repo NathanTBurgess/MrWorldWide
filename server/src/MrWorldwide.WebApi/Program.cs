@@ -1,3 +1,4 @@
+using MrWorldwide.WebApi.Infrastructure.Configuration;
 using Serilog;
 
 namespace MrWorldwide.WebApi
@@ -9,6 +10,7 @@ namespace MrWorldwide.WebApi
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .BindApplicationConfigurations()
                 .UseSerilog((ctx, lc) =>
                 {
                     lc.ReadFrom.Configuration(ctx.Configuration);

@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
-import { useAuth } from "./useAuth";
+import React, {useEffect, useState} from "react";
+import axios, {AxiosError} from "axios";
+import {useAuth} from "./useAuth";
+import {useLogger} from "../logging";
+import {useToken} from "./TokenProvider";
+import {SignInResult} from "./AuthProvider";
 
 function SilentRefresh() {
-    const { userManager } = useAuth();
+    const {events, actions: {silentRefresh}} = useAuth();
+    const {token} = useToken();
     const [refreshing, setRefreshing] = useState(false);
+    const logger = useLogger(SilentRefresh);
     useEffect(() => {
-        userManager.events.addAccessTokenExpiring(TryRefreshToken);
+        events.addAccessTokenExpiring(onAccessTokenExpiring);
         return () => {
-            userManager.events.removeAccessTokenExpiring(TryRefreshToken);
+            events.removeAccessTokenExpiring(onAccessTokenExpiring);
         };
     }, []);
     useEffect(() => {
@@ -18,14 +23,14 @@ function SilentRefresh() {
             },
             (error: Error | AxiosError) => {
                 if (axios.isAxiosError(error) && error.response?.status === 401) {
+                    logger.debug('401 response returned. Attempting auth refresh and reattempt.');
                     return TryRefreshToken()
-                        .then(userManager.getUser)
-                        .then((user) => {
-                            if (user) {
+                        .then((result) => {
+                            if (result.succeeded) {
                                 const config = {
                                     ...error.config,
                                     headers: {
-                                        Authorization: `Bearer ${user.access_token}`,
+                                        Authorization: `Bearer ${token}`,
                                     },
                                 };
                                 return axios
@@ -51,17 +56,15 @@ function SilentRefresh() {
         };
     }, []);
 
-    async function RefreshToken() {
-        await userManager.signinSilent();
+    async function onAccessTokenExpiring(): Promise<void>{
+        logger.debug("Access token expiring event dispatched. Attempting silent refresh.");
+        await TryRefreshToken();
     }
-
-    async function TryRefreshToken() {
-        if (refreshing) return;
+    async function TryRefreshToken(): Promise<SignInResult | { succeeded: false }> {
+        if (refreshing) return {succeeded: false};
         setRefreshing(true);
         try {
-            await RefreshToken();
-        } catch (e) {
-            await userManager.signinRedirect();
+            return await silentRefresh();
         } finally {
             setRefreshing(false);
         }

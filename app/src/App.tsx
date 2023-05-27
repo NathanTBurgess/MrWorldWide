@@ -1,15 +1,20 @@
 import React from "react";
 import AppRoutes from "./App.Routes";
 import {GoogleOAuthProvider} from "@react-oauth/google";
+import TokenProvider from "./utils/auth/TokenProvider";
+import AuthProvider from "./utils/auth/AuthProvider";
 
 function App() {
-    // const oidcEnvironmentConfig = useOidcEnvironmentConfiguration();
+
+    const clientId = process.env["REACT_APP_GOOGLE_CLIENT_ID"] ?? "";
     return (
-        // <AuthProvider {...oidcEnvironmentConfig}>
-        <GoogleOAuthProvider clientId={""}>
-            <AppRoutes/>
+        <GoogleOAuthProvider clientId={clientId}>
+            <TokenProvider expiryThreshold={5 * 60 * 1000}>
+                <AuthProvider>
+                    <AppRoutes/>
+                </AuthProvider>
+            </TokenProvider>
         </GoogleOAuthProvider>
-        ///*</AuthProvider>*/
     );
 }
 

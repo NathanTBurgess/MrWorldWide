@@ -101,6 +101,10 @@ public static class ProblemDetailOptionsExtensions
         {
             var httpContext = context.HttpContext;
             var exception = httpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+            if (exception == null)
+            {
+                return;
+            }
             context.ProblemDetails.Extensions.Add("error", new
             {
                 name = exception?.GetType().Name,

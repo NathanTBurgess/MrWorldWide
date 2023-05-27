@@ -1,14 +1,16 @@
-export interface SessionStorageProps {
-    setValue(value: string): void;
+import {Dispatch, useState} from "react";
 
-    getValue(): string | null;
+export type SessionStorage = [(string | null), Dispatch<string | null>]
 
-    clearValue(): void;
-}
-
-export function useSessionStorage(key: string): SessionStorageProps {
-    function setValue(value: string): void {
+export function useSessionStorage(key: string): SessionStorage {
+    const [value, setValueInternal] = useState<string | null>(()=>getValue());
+    function setValue(value: string | null): void {
+        if(value === null){
+            clearValue();
+            return;
+        }
         sessionStorage.setItem(key, value);
+        setValueInternal(value);
     }
 
     function getValue(): string | null {
@@ -17,11 +19,8 @@ export function useSessionStorage(key: string): SessionStorageProps {
 
     function clearValue(): void {
         sessionStorage.removeItem(key);
+        setValueInternal(null);
     }
 
-    return {
-        setValue,
-        getValue,
-        clearValue,
-    };
+    return [value, setValue];
 }

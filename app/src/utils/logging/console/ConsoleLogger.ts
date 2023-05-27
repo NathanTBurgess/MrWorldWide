@@ -1,5 +1,7 @@
 import {LogLevel} from "../LogLevel";
 import {LoggingAdapter} from "../LoggingAdapter";
+import {object} from "yup";
+import {LoggerType} from "../useLogger";
 
 export interface ConsoleLoggerConfiguration {
     logLevel?: LogLevel;
@@ -31,21 +33,21 @@ function formatLogLevel(level: LogLevel): string {
     }
 }
 
-// Utility function to style the message
-function styleMessage(rawMessage: TemplateStringsArray): string {
-    let styledMessage = "";
-
-    for (let i = 0; i < rawMessage.length; i++) {
-        styledMessage += rawMessage[i];
-
-        if (i < rawMessage.length - 1) {
-            styledMessage += "%c";
+function templatedMessage(messageTemplateArray: string[], templateProperties: {[key: string]: string | undefined}): string[]{
+    return messageTemplateArray.map((templateItem, idx)=>{
+        let value: string;
+        if(idx % 2 === 0){
+            value = templateItem;
         }
-    }
-
-    return styledMessage;
+        else{
+            value = templateProperties[templateItem] ?? "undefined";
+        }
+        if(idx < messageTemplateArray.length - 1){
+            value += "%c";
+        }
+        return value;
+    });
 }
-
 const baseStyle = "font-weight: bold;";
 const defaultStyle = `${baseStyle} background: inherit; color: inherit;`;
 
@@ -65,43 +67,48 @@ function consoleLogLevelStyle(level: LogLevel): string {
     return `${baseStyle} color: inherit;`;
 }
 
-function consoleArgumentStyle(isNumber: boolean): string {
-
-    if (isNumber) {
+function argumentStyle(argument: string): string {
+    const withoutStyle = argument.endsWith('%c') ? argument.substring(0, argument.length - 2) : argument;
+    if (!isNaN(Number(withoutStyle))) {
         return `${baseStyle} color: #CBC3E3;`;
     }
+    if(withoutStyle === 'undefined'){
+        return `${baseStyle} color: #FFCCCB;`;
 
+    }
     return `${baseStyle} color: teal;`;
 }
 
 export default class ConsoleLogger implements LoggingAdapter {
     private readonly currentLogLevel: LogLevel;
-
     constructor(private readonly configuration: ConsoleLoggerConfiguration) {
         this.currentLogLevel = configuration.logLevel ?? LogLevel.Debug;
     }
 
-
     name = "Console";
 
-    log(level: LogLevel, rawMessage: TemplateStringsArray,
-        ...properties: string[]): void {
+
+    log(level: LogLevel, loggerType: string, messageTemplateArray: string[], templateVals: { [p: string]: string| undefined }): void {
         if (level < this.currentLogLevel) {
             return;
         }
         const timestamp = formatTimestamp(new Date());
         const levelString = formatLogLevel(level);
-        const message = styleMessage(rawMessage);
-
+        const message = templatedMessage(messageTemplateArray, templateVals);
         console.log(
-            `[${timestamp} %c${levelString}%c] ${message}`,
+            `[${timestamp} %c${levelString}%c] <%c${loggerType.toString()}%c> ${message.join('')}`,
             ...[
                 consoleLogLevelStyle(level),
                 defaultStyle,
-                ...properties.flatMap((prop) => [
-                    consoleArgumentStyle(!isNaN(parseFloat(prop))),
-                    defaultStyle
-                ])
+                `${baseStyle} color: orange;`,
+                defaultStyle,
+                ...message.flatMap((_, idx) => {
+                    if(idx >= message.length -1){
+                        return [];
+                    }
+                    const returned = idx % 2 === 0 ? [argumentStyle(message[idx + 1])] : [defaultStyle];
+                    return returned;
+                })
             ]
         );
     }

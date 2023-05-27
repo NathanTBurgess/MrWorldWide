@@ -34,10 +34,10 @@ function LoggingProvider({loggers, children}: LoggingProviderProps) {
         const adapters = getLoggingAdapters();
         const names = adapters.map(x => x.name);
         for (const loadedLogger of adapters) {
-            const logger = new Logger(loadedLogger);
-            logger.debug`Initializing Logging Providers...`
+            const logger = new Logger(loadedLogger, LoggingProvider);
+            logger.debug(`Initializing Logging Providers...`, {})
             for (const loggerName of names) {
-                logger.debug`${loggerName} loaded`;
+                logger.debug('{loggerName} loaded', {loggerName});
             }
         }
     }, []);

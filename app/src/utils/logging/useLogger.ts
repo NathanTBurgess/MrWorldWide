@@ -1,19 +1,25 @@
 // src/useLogger.ts
-import { useContext } from "react";
-import { LoggerContext } from "./LoggerContext";
-import { LogLevel } from "./LogLevel";
-import {Logger} from "./Logger";
-import {LoggingAdapter} from "./LoggingAdapter";
+import {useContext} from "react";
+import {LoggerContext} from "./LoggerContext";
+import {ErrorTypes, ILogger, Logger} from "./Logger";
 
-export function useLogger(): Logger {
+interface Type<T = any> extends Function {
+    new(...args: any[]): T;
+}
+
+export type LoggerType = string | symbol | Type | ((...args: any[])=> any);
+
+export function useLogger(type: LoggerType): ILogger {
     const loggingAdapters = useContext(LoggerContext);
-    const log = (level: LogLevel, message: TemplateStringsArray,
-                 ...properties: string[]): void => {
-        loggingAdapters.forEach((logger) => logger.log(level, message, ...properties));
+    const loggers = loggingAdapters.map(x => new Logger(x, type));
+    return {
+        debug: (messageTemplate, properties) =>
+            loggers.forEach(x => x.debug(messageTemplate, properties ?? {})),
+        error: (error: ErrorTypes, messageTemplate: string, properties: { [p: string]: string }) =>
+            loggers.forEach(x => x.error(error, messageTemplate ?? "", properties ?? {})),
+        info: (messageTemplate, properties) =>
+            loggers.forEach(x => x.info(messageTemplate, properties ?? {})),
+        warn: (messageTemplate, properties) =>
+            loggers.forEach(x => x.warn(messageTemplate, properties ?? {})),
     };
-    const logAllAdapter: LoggingAdapter = {
-        log,
-        name: "All"
-    };
-    return new Logger(logAllAdapter);
 }
