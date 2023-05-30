@@ -1,4 +1,5 @@
 using MrWorldwide.WebApi.Infrastructure.Configuration;
+using MrWorldwide.WebApi.Infrastructure.EntityFramework;
 using Serilog;
 
 namespace MrWorldwide.WebApi
@@ -6,7 +7,11 @@ namespace MrWorldwide.WebApi
     public class Program
     {
         public static async Task Main(string[] args)
-            => await CreateHostBuilder(args).Build().RunAsync();
+        {
+            var host = CreateHostBuilder(args).Build();
+            await host.MigrateDatabaseAsync();
+            await host.RunAsync();
+        }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
