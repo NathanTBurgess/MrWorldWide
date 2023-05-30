@@ -51,7 +51,7 @@ jobs:
             uses: actions/download-artifact@v3
             with:
                 name: mrworldwide_app
-                path: /app/build
+                path: app/build
         -
             name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@v1
