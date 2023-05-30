@@ -13,6 +13,10 @@ public static class HostBuilderExtensions
                 nestedOptions.BindNestedOptions<GoogleOptions>();
                 nestedOptions.BindNestedOptions<JwtOptions>();
             });
+            services.BindOptions<HostingOptions>(nestedOptions =>
+            {
+                nestedOptions.BindNestedOptions<CorsHostingOptions>("Cors");
+            });
         });
     }
 }

@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MrWorldwide.WebApi.Data;
 using MrWorldwide.WebApi.Data.Entities;
 using MrWorldwide.WebApi.Features;
 using MrWorldwide.WebApi.Features.Authorization;
+using MrWorldwide.WebApi.Infrastructure.Configuration;
 using MrWorldwide.WebApi.Infrastructure.ExceptionHandling;
 
 namespace MrWorldwide.WebApi
@@ -66,7 +68,7 @@ namespace MrWorldwide.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IOptions<CorsHostingOptions> corsOptions)
         {
             app.UseExceptionHandler();
             if (_environment.IsDevelopment())
@@ -80,7 +82,7 @@ namespace MrWorldwide.WebApi
             app.UseRouting();
             app.UseCors(x =>
             {
-                x.WithOrigins("http://localhost:3000")
+                x.WithOrigins(corsOptions.Value.AllowedOrigins)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
