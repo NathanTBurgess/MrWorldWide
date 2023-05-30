@@ -1,4 +1,3 @@
-
 export function parseTemplateLikeString(str: string): string[] {
     const regex = /(?<!\{)\{([^}]+)\}(?!\})/g;
     let match;
@@ -10,7 +9,7 @@ export function parseTemplateLikeString(str: string): string[] {
             result.push(str.substring(lastIndex, match.index));
         }
 
-        if(result.length === 0){
+        if (result.length === 0) {
             result.push('');
         }
         result.push(match[1]);

@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 export type MatchClaim = (claim: Claim) => boolean;
 
 export class ClaimsIdentity {
-    private _claims: Claim[] = [];
     nameClaimType: string = ClaimTypes.Name;
     rolesClaimType: string = ClaimTypes.Roles;
     readonly issuer: string;
@@ -17,14 +16,7 @@ export class ClaimsIdentity {
         this.issuer = this.findFirst(ClaimTypes.Issuer)?.value ?? "unknown";
     }
 
-    static fromJwt(token: string): ClaimsIdentity {
-        const decoded = jwt.decode(token, {json: true});
-        if (decoded === null) {
-            throw new Error("Provided JWT could not be decoded");
-        }
-        const claims = Object.keys(decoded).map(key => new Claim(key, decoded[key].toString()));
-        return new ClaimsIdentity(claims);
-    }
+    private _claims: Claim[] = [];
 
     public get claims(): ReadonlyArray<Claim> {
         return this._claims;
@@ -42,16 +34,25 @@ export class ClaimsIdentity {
         return this.claims.find((x) => x.key === ClaimTypes.Email)?.value ?? null;
     }
 
+    public get roles(): string[] {
+        return this.claims.filter((x) => x.key === this.rolesClaimType).map((x) => x.value);
+    }
+
+    static fromJwt(token: string): ClaimsIdentity {
+        const decoded = jwt.decode(token, {json: true});
+        if (decoded === null) {
+            throw new Error("Provided JWT could not be decoded");
+        }
+        const claims = Object.keys(decoded).map(key => new Claim(key, decoded[key].toString()));
+        return new ClaimsIdentity(claims);
+    }
+
     public addClaim(claim: Claim): void {
         this._claims.push(claim);
     }
 
     public addClaims(claims: Claim[]): void {
         this._claims.push(...claims);
-    }
-
-    public get roles(): string[] {
-        return this.claims.filter((x) => x.key === this.rolesClaimType).map((x) => x.value);
     }
 
     public hasClaim(typeOrMatch: string | MatchClaim, value?: string) {

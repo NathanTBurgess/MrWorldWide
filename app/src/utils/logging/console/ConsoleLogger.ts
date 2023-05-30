@@ -1,7 +1,5 @@
 import {LogLevel} from "../LogLevel";
 import {LoggingAdapter} from "../LoggingAdapter";
-import {object} from "yup";
-import {LoggerType} from "../useLogger";
 
 export interface ConsoleLoggerConfiguration {
     logLevel?: LogLevel;
@@ -33,21 +31,23 @@ function formatLogLevel(level: LogLevel): string {
     }
 }
 
-function templatedMessage(messageTemplateArray: string[], templateProperties: {[key: string]: string | undefined}): string[]{
-    return messageTemplateArray.map((templateItem, idx)=>{
+function templatedMessage(messageTemplateArray: string[], templateProperties: {
+    [key: string]: string | undefined
+}): string[] {
+    return messageTemplateArray.map((templateItem, idx) => {
         let value: string;
-        if(idx % 2 === 0){
+        if (idx % 2 === 0) {
             value = templateItem;
-        }
-        else{
+        } else {
             value = templateProperties[templateItem] ?? "undefined";
         }
-        if(idx < messageTemplateArray.length - 1){
+        if (idx < messageTemplateArray.length - 1) {
             value += "%c";
         }
         return value;
     });
 }
+
 const baseStyle = "font-weight: bold;";
 const defaultStyle = `${baseStyle} background: inherit; color: inherit;`;
 
@@ -72,7 +72,7 @@ function argumentStyle(argument: string): string {
     if (!isNaN(Number(withoutStyle))) {
         return `${baseStyle} color: #CBC3E3;`;
     }
-    if(withoutStyle === 'undefined'){
+    if (withoutStyle === 'undefined') {
         return `${baseStyle} color: #FFCCCB;`;
 
     }
@@ -80,15 +80,16 @@ function argumentStyle(argument: string): string {
 }
 
 export default class ConsoleLogger implements LoggingAdapter {
+    name = "Console";
     private readonly currentLogLevel: LogLevel;
+
     constructor(private readonly configuration: ConsoleLoggerConfiguration) {
         this.currentLogLevel = configuration.logLevel ?? LogLevel.Debug;
     }
 
-    name = "Console";
-
-
-    log(level: LogLevel, loggerType: string, messageTemplateArray: string[], templateVals: { [p: string]: string| undefined }): void {
+    log(level: LogLevel, loggerType: string, messageTemplateArray: string[], templateVals: {
+        [p: string]: string | undefined
+    }): void {
         if (level < this.currentLogLevel) {
             return;
         }
@@ -103,7 +104,7 @@ export default class ConsoleLogger implements LoggingAdapter {
                 `${baseStyle} color: orange;`,
                 defaultStyle,
                 ...message.flatMap((_, idx) => {
-                    if(idx >= message.length -1){
+                    if (idx >= message.length - 1) {
                         return [];
                     }
                     const returned = idx % 2 === 0 ? [argumentStyle(message[idx + 1])] : [defaultStyle];

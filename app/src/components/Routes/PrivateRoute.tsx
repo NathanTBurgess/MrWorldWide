@@ -5,8 +5,8 @@ import {Outlet} from "react-router-dom";
 
 function PrivateRoute() {
     return (
-        <AuthWrapper fallback={<AccessDenied />}>
-            <Outlet />
+        <AuthWrapper fallback={<AccessDenied/>}>
+            <Outlet/>
         </AuthWrapper>
     )
 }

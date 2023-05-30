@@ -26,11 +26,11 @@ export interface StructuredLog {
 
 export class Logger implements ILogger {
     private readonly loggerType: string;
+
     constructor(private readonly adapter: LoggingAdapter, private readonly type: LoggerType) {
-        if(typeof type === 'function'){
+        if (typeof type === 'function') {
             this.loggerType = type.name;
-        }
-        else{
+        } else {
             this.loggerType = type.toString();
         }
     }
@@ -42,18 +42,18 @@ export class Logger implements ILogger {
 
     info(messageTemplate: string, properties: { [key: string]: string } = {}): void {
         const templateLike = parseTemplateLikeString(messageTemplate);
-        this.adapter.log(LogLevel.Information, this.loggerType,templateLike, properties);
+        this.adapter.log(LogLevel.Information, this.loggerType, templateLike, properties);
     }
 
     warn(messageTemplate: string, properties: { [key: string]: string } = {}): void {
         const templateLike = parseTemplateLikeString(messageTemplate);
-        this.adapter.log(LogLevel.Warning, this.loggerType,templateLike, properties);
+        this.adapter.log(LogLevel.Warning, this.loggerType, templateLike, properties);
     }
 
-    error(error: ErrorTypes, messageTemplate = "", properties: { [key: string]: string }= {}): void {
+    error(error: ErrorTypes, messageTemplate = "", properties: { [key: string]: string } = {}): void {
         const structuredErrorLog = this.formatErrorType(error);
         const templateLike = parseTemplateLikeString((messageTemplate ?? '') + '\n' + structuredErrorLog.messageTemplate);
-        this.adapter.log(LogLevel.Error, this.loggerType,templateLike, {...properties, ...structuredErrorLog.properties});
+        this.adapter.log(LogLevel.Error, this.loggerType, templateLike, {...properties, ...structuredErrorLog.properties});
     }
 
     private formatErrorType(error: ErrorTypes) {
@@ -70,14 +70,14 @@ export class Logger implements ILogger {
     private formatProblemDetails(apiError: ProblemDetails): StructuredLog {
         const templateSb = new StringBuilder();
         templateSb.append("{status}: {title}");
-        if(apiError.detail){
+        if (apiError.detail) {
             templateSb.append(' - {detail}');
         }
-        if(isDevelopment()){
+        if (isDevelopment()) {
             templateSb.appendLine('');
             templateSb.append("traceId: {traceId}");
         }
-        if(apiError.error){
+        if (apiError.error) {
             templateSb.appendLine('');
             templateSb.appendLine('exception: {exception}');
             templateSb.appendLine('message: {message}');

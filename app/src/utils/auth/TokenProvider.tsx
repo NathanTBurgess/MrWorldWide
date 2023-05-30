@@ -1,9 +1,7 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import {useSessionStorage} from "../hooks";
-import {ClaimsIdentity} from "./claims/ClaimsIdentity";
 import jwt, {JwtPayload} from "jsonwebtoken";
-import {Claim} from "./claims/Claim";
-import {IdentityChangedEvent, TokenExpiringEvent} from "../events";
+import {TokenExpiringEvent} from "../events";
 
 
 export interface TokenProviderProps {
@@ -14,7 +12,7 @@ export interface TokenProviderProps {
 export interface TokenContextProps {
     setToken: (accessToken: string) => void;
     token: string | null;
-    jwtPayload : jwt.JwtPayload | null;
+    jwtPayload: jwt.JwtPayload | null;
     clear: () => void;
 }
 
@@ -26,7 +24,7 @@ function TokenProvider({children, expiryThreshold = DEFAULT_EXPIRY_THRESHOLD}: T
     children: (ReactNode | ReactNode[])
 }) {
     const [token, setTokenInternal] = useSessionStorage('access_token');
-    const jwtPayload = token ? jwt.decode(token, {json: true}): null;
+    const jwtPayload = token ? jwt.decode(token, {json: true}) : null;
     const [expiry, setExpiry] = useState<number | null>(null);
 
     // When the token changes, parse and set the claims

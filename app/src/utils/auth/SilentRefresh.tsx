@@ -56,10 +56,11 @@ function SilentRefresh() {
         };
     }, []);
 
-    async function onAccessTokenExpiring(): Promise<void>{
+    async function onAccessTokenExpiring(): Promise<void> {
         logger.debug("Access token expiring event dispatched. Attempting silent refresh.");
         await TryRefreshToken();
     }
+
     async function TryRefreshToken(): Promise<SignInResult | { succeeded: false }> {
         if (refreshing) return {succeeded: false};
         setRefreshing(true);

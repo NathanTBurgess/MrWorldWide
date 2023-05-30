@@ -2,7 +2,6 @@
 import {Logger as SeqLoggingLogger, SeqLogLevel} from "seq-logging";
 import {LogLevel} from "../LogLevel";
 import {LoggingAdapter} from "../LoggingAdapter";
-import {LoggerType} from "../useLogger";
 
 interface SeqLoggerConfiguration {
     serverUrl: string;
@@ -12,6 +11,7 @@ interface SeqLoggerConfiguration {
 }
 
 export default class SeqLogger implements LoggingAdapter {
+    name = "Seq";
     private readonly seqLogger: SeqLoggingLogger;
     private readonly currentLogLevel: LogLevel;
 
@@ -25,9 +25,6 @@ export default class SeqLogger implements LoggingAdapter {
         });
         this.currentLogLevel = configuration.logLevel ?? LogLevel.Debug;
     }
-
-
-    name = "Seq";
 
     log(level: LogLevel, type: string, messageTemplateArray: string[], templateVals: { [p: string]: string }): void {
         let messageTemplate = "";

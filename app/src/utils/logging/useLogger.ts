@@ -7,7 +7,7 @@ interface Type<T = any> extends Function {
     new(...args: any[]): T;
 }
 
-export type LoggerType = string | symbol | Type | ((...args: any[])=> any);
+export type LoggerType = string | symbol | Type | ((...args: any[]) => any);
 
 export function useLogger(type: LoggerType): ILogger {
     const loggingAdapters = useContext(LoggerContext);
