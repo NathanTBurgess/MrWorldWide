@@ -5,7 +5,6 @@ import {useToken} from "./TokenProvider";
 
 function AxiosConfig() {
     const {token} = useToken();
-    const logger = useLogger(AxiosConfig);
     useEffect(() => {
         if (token) {
             axios.defaults.headers.common = {Authorization: `Bearer ${token}`};
