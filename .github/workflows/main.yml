@@ -124,7 +124,7 @@ jobs:
                 image: ${{ steps.push-image.outputs.image }}
                 environment-variables: |
                     Jwt:Secret=${{ secrets.JWT_SECRET }}
-                    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                    ConnectionStrings:DefaultConnection=${{ secrets.AWS_POSTGRES_CONNECTION_STRING }}
         -
             name: Deploy Amazon ECS task definition
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
