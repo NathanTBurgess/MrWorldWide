@@ -18,7 +18,7 @@ function TopNavXS() {
                     <Grid item>
                         <Stack direction={"row"} spacing={1}>
                             <TopNavMenuItem title={""} tooltip={"Jackson, that you?"}
-                                            icon={<LockPersonIcon color={"secondary"}/>}
+                                            icon={<LockPersonIcon />}
                                             onClick={() => navigate("login")}/>
                             {/*<TopNavUserMenu/>*/}
                         </Stack>
