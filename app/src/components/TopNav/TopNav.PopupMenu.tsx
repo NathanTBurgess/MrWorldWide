@@ -1,6 +1,7 @@
 import React from "react";
 import {IconButton, Menu} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import {useNavigate} from "react-router-dom";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import {TopNavMenuItem} from "./TopNav.MenuItem";
 import {useMenu} from "../../utils/menu";
@@ -11,10 +12,10 @@ export interface TopNavPopupMenuProps {
 
 function TopNavPopupMenu({edge}: TopNavPopupMenuProps) {
     const {open, close, isOpen, anchorEl} = useMenu();
+    const navigate = useNavigate();
 
-    function handleClick() {
-        close();
-        //navigate(target);
+    function handleClick(target: string) {
+        navigate(target);
     }
 
     return (

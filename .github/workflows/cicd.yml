@@ -3,9 +3,10 @@ on:
   pull_request:
     branches:
       - main
+      - develop
 jobs:
     build-backend:
-        name: Build
+        name: Build Backend
         runs-on: ubuntu-latest
         environment: cicd
         steps:
@@ -26,7 +27,7 @@ jobs:
                 build-args: |
                     CONFIGURATION=Release
     test-backend:
-        name: Test
+        name: Test Backend
         runs-on: ubuntu-latest
         steps:
         -
@@ -60,7 +61,7 @@ jobs:
                 ASPNETCORE_ENVIRONMENT: tests
             run: dotnet test ./server/src/MrWorldwide.sln --configuration Release --no-build --verbosity normal
     build-frontend:
-        name: Frontend
+        name: Build Frontend
         runs-on: ubuntu-latest
         steps:
         - 
