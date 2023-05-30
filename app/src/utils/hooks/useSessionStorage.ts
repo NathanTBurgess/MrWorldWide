@@ -3,9 +3,10 @@ import {Dispatch, useState} from "react";
 export type SessionStorage = [(string | null), Dispatch<string | null>]
 
 export function useSessionStorage(key: string): SessionStorage {
-    const [value, setValueInternal] = useState<string | null>(()=>getValue());
+    const [value, setValueInternal] = useState<string | null>(() => getValue());
+
     function setValue(value: string | null): void {
-        if(value === null){
+        if (value === null) {
             clearValue();
             return;
         }

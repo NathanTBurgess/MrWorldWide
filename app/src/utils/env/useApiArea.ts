@@ -3,12 +3,14 @@ import path from "path";
 export type RouteParameterTypes = string | number | boolean;
 
 const apiBase = process.env["REACT_APP_API_ROOT"];
-if(!apiBase){
+if (!apiBase) {
     throw new Error("An API base url has not been configured");
 }
+
 export interface ApiArea {
     baseUrl: string;
-    urlForEndpoint(endpoint: string, ...routeParameters: {[key: string]: RouteParameterTypes}[]): string;
+
+    urlForEndpoint(endpoint: string, ...routeParameters: { [key: string]: RouteParameterTypes }[]): string;
 }
 
 export function useApiArea(area: string): ApiArea {
@@ -19,7 +21,9 @@ export function useApiArea(area: string): ApiArea {
     };
 }
 
-function urlForEndpoint(url: URL, endpoint: string, ...routeParameters: {[key: string]: RouteParameterTypes}[]): string{
+function urlForEndpoint(url: URL, endpoint: string, ...routeParameters: {
+    [key: string]: RouteParameterTypes
+}[]): string {
     const routeParametersObject = mergeParameters(...routeParameters);
     const endpointPath = buildTemplatedRoute(endpoint, routeParametersObject);
     const endpointUrl = new URL(url);// {...url, pathname:  path.join(url.pathname, endpointPath)};
@@ -27,9 +31,9 @@ function urlForEndpoint(url: URL, endpoint: string, ...routeParameters: {[key: s
     return endpointUrl.href;
 }
 
-function buildTemplatedRoute(endpoint: string, routeParameters: {[key: string]: RouteParameterTypes}): string {
+function buildTemplatedRoute(endpoint: string, routeParameters: { [key: string]: RouteParameterTypes }): string {
     const pathParams = endpoint.match(/{(.*?)}/g) || Array.of<string>();
-    if(pathParams.length === 0){
+    if (pathParams.length === 0) {
         return endpoint;
     }
     return pathParams.reduce((currentUrl: string, param: string) => {
@@ -44,8 +48,10 @@ function buildTemplatedRoute(endpoint: string, routeParameters: {[key: string]: 
     }, endpoint);
 }
 
-function mergeParameters(...routeParameters: {[key: string]: RouteParameterTypes}[]): {[key: string]: RouteParameterTypes} {
-    const result: {[key: string]: RouteParameterTypes} = {};
+function mergeParameters(...routeParameters: { [key: string]: RouteParameterTypes }[]): {
+    [key: string]: RouteParameterTypes
+} {
+    const result: { [key: string]: RouteParameterTypes } = {};
 
     for (const params of routeParameters) {
         for (const key in params) {

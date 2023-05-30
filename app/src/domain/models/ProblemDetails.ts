@@ -10,7 +10,7 @@ export interface ProblemDetails {
     error?: ExceptionDetails;
 }
 
-export interface ExceptionDetails{
+export interface ExceptionDetails {
     name: string;
     message: string;
     stackTrace: string;

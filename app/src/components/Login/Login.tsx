@@ -33,52 +33,53 @@ function Login() {
     }
 
     return (
-        !isReady ? <LoadingWrapper loading={true}><Box /></LoadingWrapper> :
-        <>
-            <Container maxWidth="sm">
-                <Box sx={{textAlign: 'center', paddingTop: 4}}>
-                    <Card sx={{boxShadow: 1}}>
-                        <CardContent>
-                            <Typography variant="h4" gutterBottom>
-                                Welcome to Mr Worldwide
-                            </Typography>
-                            {authState.isAuthenticated ?
-                                <>
-                                    <Typography variant="body1" gutterBottom>
-                                        {`It looks like you're already signed in as ${authState.user.profile.name}. Sign out?`}
-                                    </Typography>
-                                    <Box sx={{marginTop: 2, justifyContent: 'center', display: 'flex'}}>
-                                        <Button variant={"contained"} onClick={async () => await actions.signout()}>
-                                            Yea, sign me out
-                                        </Button>
-                                        {devMode &&
-                                            <Button variant={"contained"} onClick={attemptRefresh}>
-                                                Lets attempt a refresh
+        !isReady ? <LoadingWrapper loading={true}><Box/></LoadingWrapper> :
+            <>
+                <Container maxWidth="sm">
+                    <Box sx={{textAlign: 'center', paddingTop: 4}}>
+                        <Card sx={{boxShadow: 1}}>
+                            <CardContent>
+                                <Typography variant="h4" gutterBottom>
+                                    Welcome to Mr Worldwide
+                                </Typography>
+                                {authState.isAuthenticated ?
+                                    <>
+                                        <Typography variant="body1" gutterBottom>
+                                            {`It looks like you're already signed in as ${authState.user.profile.name}. Sign out?`}
+                                        </Typography>
+                                        <Box sx={{marginTop: 2, justifyContent: 'center', display: 'flex'}}>
+                                            <Button variant={"contained"} onClick={async () => await actions.signout()}>
+                                                Yea, sign me out
                                             </Button>
-                                        }
-                                    </Box>
-                                </> :
-                                <>
-                                    <Typography variant="body1" gutterBottom>
-                                        As the exclusive admin user, Jackson, you can access advanced features by
-                                        logging in
-                                        with your Google account. Enjoy full control over content management.
-                                    </Typography>
-                                    <Box sx={{marginTop: 2, justifyContent: 'center', display: 'flex'}}>
-                                        <GoogleLogin
-                                            onSuccess={handleSuccess}
-                                        />
-                                    </Box>
-                                </>}
-                            <Typography variant="body2" sx={{marginTop: 3}}>
-                                Psst, Jackson! This secret login page is just for you. If you are not Jackson,
-                                you must have taken a wrong turn somewhere. No worries, just head back to the home page!
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Box>
-            </Container>
-        </>
+                                            {devMode &&
+                                                <Button variant={"contained"} onClick={attemptRefresh}>
+                                                    Lets attempt a refresh
+                                                </Button>
+                                            }
+                                        </Box>
+                                    </> :
+                                    <>
+                                        <Typography variant="body1" gutterBottom>
+                                            As the exclusive admin user, Jackson, you can access advanced features by
+                                            logging in
+                                            with your Google account. Enjoy full control over content management.
+                                        </Typography>
+                                        <Box sx={{marginTop: 2, justifyContent: 'center', display: 'flex'}}>
+                                            <GoogleLogin
+                                                onSuccess={handleSuccess}
+                                            />
+                                        </Box>
+                                    </>}
+                                <Typography variant="body2" sx={{marginTop: 3}}>
+                                    Psst, Jackson! This secret login page is just for you. If you are not Jackson,
+                                    you must have taken a wrong turn somewhere. No worries, just head back to the home
+                                    page!
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Box>
+                </Container>
+            </>
     );
 }
 

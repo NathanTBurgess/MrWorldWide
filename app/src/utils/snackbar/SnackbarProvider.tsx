@@ -1,10 +1,10 @@
-import React, { ReactNode, useState } from "react";
-import { SnackbarContext } from "./SnackbarContext";
-import { SnackbarProps } from "./SnackbarProps";
-import { SnackbarState } from "./SnackbarState";
+import React, {ReactNode, useState} from "react";
+import {SnackbarContext} from "./SnackbarContext";
+import {SnackbarProps} from "./SnackbarProps";
+import {SnackbarState} from "./SnackbarState";
 import SnackbarRoot from "./SnackbarRoot";
 
-export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
+export const SnackbarProvider = ({children}: { children: ReactNode }) => {
     const initialProps: SnackbarProps = {
         position: "BottomCenter",
         type: "Information",
@@ -16,6 +16,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
     function onClose(): void {
         setOpen(false);
     }
+
     function showMessage(messageProps: SnackbarProps) {
         if (messageProps.type === undefined) {
             messageProps.type = "Information";
@@ -26,6 +27,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
         setSnackbarProps(messageProps);
         setOpen(true);
     }
+
     const snackbarState: SnackbarState = {
         open,
         props: snackbarProps,
@@ -34,7 +36,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
     };
     return (
         <SnackbarContext.Provider value={snackbarState}>
-            <SnackbarRoot />
+            <SnackbarRoot/>
             {children}
         </SnackbarContext.Provider>
     );

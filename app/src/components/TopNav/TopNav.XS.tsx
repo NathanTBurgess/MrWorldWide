@@ -2,7 +2,6 @@ import React from "react";
 import {AppBar, Grid, Stack, Toolbar} from "@mui/material";
 import "./TopNav.css";
 import TopNavPopupMenu from "./TopNav.PopupMenu";
-import TopNavUserMenu from "./TopNav.UserMenu";
 import {useNavigate} from "react-router-dom";
 import {TopNavMenuItem} from "./TopNav.MenuItem";
 import LockPersonIcon from '@mui/icons-material/LockPerson';
@@ -19,7 +18,8 @@ function TopNavXS() {
                     <Grid item>
                         <Stack direction={"row"} spacing={1}>
                             <TopNavMenuItem title={""} tooltip={"Jackson, that you?"}
-                                            icon={<LockPersonIcon color={"secondary"}/>} onClick={() => navigate("login")}/>
+                                            icon={<LockPersonIcon color={"secondary"}/>}
+                                            onClick={() => navigate("login")}/>
                             {/*<TopNavUserMenu/>*/}
                         </Stack>
                     </Grid>

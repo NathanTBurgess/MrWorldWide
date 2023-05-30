@@ -11,7 +11,7 @@ function AppRoutes() {
                 <Route path={"/"}>
                     <Route index element={<>Where in the world is Jackson? Find out here soon.</>}/>
                 </Route>
-                <Route path={"login"} element={<Login />}/>
+                <Route path={"login"} element={<Login/>}/>
                 <Route path={"*"} element={<NotFound/>}/>
             </Route>
         </Routes>

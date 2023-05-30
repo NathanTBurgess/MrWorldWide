@@ -2,16 +2,15 @@ import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import TopNavUserMenu from "./TopNav.UserMenu";
-import { useNavigate } from "react-router-dom";
-import { Stack } from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {Stack} from "@mui/material";
 import {TopNavMenuItem} from "./TopNav.MenuItem";
 import LockPersonIcon from '@mui/icons-material/LockPerson';
+
 function TopNavLg() {
     const navigate = useNavigate();
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
                     <Stack direction={"row"} spacing={5}>

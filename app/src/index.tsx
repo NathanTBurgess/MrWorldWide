@@ -7,7 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import {defaultTheme} from "./themes/defaultTheme";
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
 import {SnackbarProvider} from "./utils/snackbar";
 import ModalProvider from "./utils/modal/ModalProvider";
 import {LocalizationProvider} from "@mui/x-date-pickers";
@@ -15,7 +15,7 @@ import LoggingProvider, {LoggerTypes} from "./utils/logging/LoggingProvider";
 import ConsoleLogger from "./utils/logging/console/ConsoleLogger";
 import {LogLevel} from "./utils/logging";
 import SeqLogger from "./utils/logging/seq/SeqLogger";
-import { isDevelopment } from "./utils/env";
+import {isDevelopment} from "./utils/env";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const rootElement = document.getElementById("root");
@@ -34,20 +34,20 @@ const loggers: LoggerTypes[] = [
 ]
 root.render(
     // <React.StrictMode>
-        <LoggingProvider loggers={loggers}>
-            <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={"en-us"}>
-                <ThemeProvider theme={defaultTheme}>
-                    <CssBaseline/>
-                    <BrowserRouter basename={baseUrl ?? undefined}>
-                        <SnackbarProvider>
-                            <ModalProvider>
-                                <App/>
-                            </ModalProvider>
-                        </SnackbarProvider>
-                    </BrowserRouter>
-                </ThemeProvider>
-            </LocalizationProvider>
-        </LoggingProvider>
+    <LoggingProvider loggers={loggers}>
+        <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={"en-us"}>
+            <ThemeProvider theme={defaultTheme}>
+                <CssBaseline/>
+                <BrowserRouter basename={baseUrl ?? undefined}>
+                    <SnackbarProvider>
+                        <ModalProvider>
+                            <App/>
+                        </ModalProvider>
+                    </SnackbarProvider>
+                </BrowserRouter>
+            </ThemeProvider>
+        </LocalizationProvider>
+    </LoggingProvider>
     /*</React.StrictMode>*/
 );
 
