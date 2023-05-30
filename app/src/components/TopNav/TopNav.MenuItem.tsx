@@ -15,9 +15,11 @@ export function TopNavMenuItem(props: AuthMenuItemProps) {
         <>
             <Tooltip title={props.tooltip}>
                 <MenuItem onClick={props.onClick}>
-                    <ListItemIcon>
+                    <ListItemIcon sx={(theme)=>({
+                        color: theme.palette.primary.contrastText
+                    })}>
                         {props.badge ? (
-                            <Badge {...props.badge}>
+                            <Badge {...props.badge} >
                                 <Typography>{props.icon}</Typography>
                             </Badge>
                         ) : (

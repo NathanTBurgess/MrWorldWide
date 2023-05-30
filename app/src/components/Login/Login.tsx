@@ -37,7 +37,11 @@ function Login() {
             <>
                 <Container maxWidth="sm">
                     <Box sx={{textAlign: 'center', paddingTop: 4}}>
-                        <Card sx={{boxShadow: 1}}>
+                        <Card sx={(theme) => ({
+                            backgroundColor: theme.palette.secondary.container,
+                            color: theme.palette.onSecondary.container,
+                            boxShadow: 2
+                        })}>
                             <CardContent>
                                 <Typography variant="h4" gutterBottom>
                                     Welcome to Mr Worldwide
@@ -65,8 +69,8 @@ function Login() {
                                             with your Google account. Enjoy full control over content management.
                                         </Typography>
                                         <Box sx={{marginTop: 2, justifyContent: 'center', display: 'flex'}}>
-                                            <GoogleLogin
-                                                onSuccess={handleSuccess}
+                                            <GoogleLogin theme={"outline"} type={"standard"} auto_select={false}
+                                                         onSuccess={handleSuccess}
                                             />
                                         </Box>
                                     </>}

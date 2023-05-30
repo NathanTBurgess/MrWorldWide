@@ -14,7 +14,9 @@ function TopNavLg() {
             <AppBar position="static">
                 <Toolbar>
                     <Stack direction={"row"} spacing={5}>
-                        <TopNavMenuItem title={""} icon={<LockPersonIcon/>} onClick={() => navigate("/")}/>
+                        <TopNavMenuItem title={""} tooltip={"Jackson, that you?"}
+                                        icon={<LockPersonIcon />}
+                                        onClick={() => navigate("login")}/>
                         {/*<Button color={"secondary"} onClick={() => navigate("area1")}>*/}
                         {/*    Area1*/}
                         {/*</Button>*/}
