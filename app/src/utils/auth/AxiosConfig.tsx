@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import axios from "axios";
-import {useLogger} from "../logging";
 import {useToken} from "./TokenProvider";
 
 function AxiosConfig() {
