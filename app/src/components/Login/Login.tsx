@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Button, Card, CardContent, Container, Typography, useTheme} from '@mui/material';
+import {Box, Button, Card, CardContent, Container, Typography} from '@mui/material';
 import {CredentialResponse, GoogleLogin} from '@react-oauth/google';
 import {useLogger} from "../../utils/logging";
 import {useAuth} from "../../utils/auth";
@@ -37,7 +37,7 @@ function Login() {
             <>
                 <Container maxWidth="sm">
                     <Box sx={{textAlign: 'center', paddingTop: 4}}>
-                        <Card sx={(theme)=>({
+                        <Card sx={(theme) => ({
                             backgroundColor: theme.palette.secondary.container,
                             color: theme.palette.onSecondary.container,
                             boxShadow: 2
@@ -70,7 +70,7 @@ function Login() {
                                         </Typography>
                                         <Box sx={{marginTop: 2, justifyContent: 'center', display: 'flex'}}>
                                             <GoogleLogin theme={"outline"} type={"standard"} auto_select={false}
-                                                onSuccess={handleSuccess}
+                                                         onSuccess={handleSuccess}
                                             />
                                         </Box>
                                     </>}
