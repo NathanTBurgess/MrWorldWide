@@ -171,13 +171,7 @@ jobs:
                 aws-region: ${{ env.AWS_REGION }}
         -
             name: Deploy to S3
-            uses: jakejarvis/s3-sync-action@master
-            with:
-                args: --acl public-read --follow-symlinks --delete
-                bucket: www.mrworldwide.today
-                key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                dir: "./app/build"
+            run: aws s3 sync ./app/build/ s3://www.mrworldwide.today --delete
         - 
             name: Invalidate CloudFront Distribution
             run: |
