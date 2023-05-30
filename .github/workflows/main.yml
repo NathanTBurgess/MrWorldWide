@@ -11,7 +11,7 @@ env:
     CONTAINER_NAME: webserver 
 jobs:
     build:
-        name: Build
+        name: Build Backend
         runs-on: ubuntu-latest
         environment: Release
         steps:
@@ -38,7 +38,7 @@ jobs:
                 name: mrworldwide_api
                 path: /tmp/mrworldwide_api.tar
     test:
-        name: Test
+        name: Test Backend
         runs-on: ubuntu-latest
         steps:
         -
@@ -72,7 +72,7 @@ jobs:
                 ASPNETCORE_ENVIRONMENT: tests
             run: dotnet test ./server/src/MrWorldwide.sln --configuration Release --no-build --verbosity normal
     deploy:
-        name: Deploy
+        name: Deploy Backend
         runs-on: ubuntu-latest
         needs: [build, test]
         steps:
@@ -134,7 +134,7 @@ jobs:
                 cluster: ${{ env.ECS_CLUSTER }}
                 wait-for-service-stability: false
     frontend:
-        name: Frontend
+        name: Build and Deploy Frontend
         runs-on: ubuntu-latest
         needs: [deploy]
         steps:
