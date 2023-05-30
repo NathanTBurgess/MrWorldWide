@@ -1,0 +1,89 @@
+name: CI/CD
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        environment: cicd
+        steps:
+        - 
+            name: Checkout
+            uses: actions/checkout@v2
+        -
+            name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v2
+        -
+            name: Build Image
+            uses: docker/build-push-action@v3
+            with:
+                context: ./server/src
+                file: ./server/src/MrWorldwide.WebApi/Dockerfile
+                tags: mrworldwide_api:latest
+                outputs: type=docker,dest=/tmp/mrworldwide_api.tar
+                build-args: |
+                    CONFIGURATION=Release
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+        -
+            name: Checkout
+            uses: actions/checkout@v2
+        -
+            name: Setup .NET
+            uses: actions/setup-dotnet@v1
+            with:
+                dotnet-version: '7.0.x'
+        -
+            name: Install PostgreSQL
+            run: sudo apt-get -yqq install postgresql
+        -
+            name: Setup PostgreSQL
+            run: |
+                sudo systemctl start postgresql
+                sudo -u postgres psql -c "CREATE DATABASE testdb;"
+                sudo -u postgres psql -c "CREATE USER testuser WITH PASSWORD 'testpassword';"
+                sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;"
+                echo "CONNECTION_STRINGS_DEFAULT_CONNECTION=Host=localhost;Database=testdb;Username=testuser;Password=testpassword" >> $GITHUB_ENV
+        -
+            name: Restore dependencies
+            run: dotnet restore ./server/src/MrWorldwide.sln
+        -
+            name: Build
+            run: dotnet build ./server/src/MrWorldwide.sln --configuration Release --no-restore
+        -
+            name: Test
+            env:
+                ASPNETCORE_ENVIRONMENT: tests
+            run: dotnet test ./server/src/MrWorldwide.sln --configuration Release --no-build --verbosity normal
+    frontend:
+        name: Frontend
+        runs-on: ubuntu-latest
+        steps:
+        - 
+            name: Checkout
+            uses: actions/checkout@v2
+        -
+            name: Setup Node.js environment
+            uses: actions/setup-node@v2
+            with:
+                node-version: '14.x'
+        - 
+            name: Cache Node.js modules
+            uses: actions/cache@v3
+            with:
+                path: ~/.npm
+                key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+                restore-keys: |
+                    ${{ runner.OS }}-node-
+        -
+            name: Install Dependencies
+            run: npm ci
+            working-directory: ./app
+        -
+            name: Build
+            run: npm run build:prod
+            working-directory: ./app

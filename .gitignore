@@ -36,7 +36,6 @@ app/node_modules/
 app/.env.local
 app/.env.development
 app/.env.test
-app/.env.production
 
 # Terraform
 .terraform/
