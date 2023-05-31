@@ -3,7 +3,7 @@ import {Stack} from "@mui/material";
 import MenuProvider from "../../utils/menu/MenuProvider";
 import ResponsiveContainer from "../ResponsiveContainer/ResponsiveContainer";
 import TopNavXS from "../TopNav/TopNav.XS";
-import TopNavLg from "../TopNav/TopNav.Lg";
+import TopNavLg from "../TopNav/TopNav.Md";
 import ScrollWrapper from "../UtilityWrappers/ScrollWrapper";
 import {Outlet} from "react-router-dom";
 

@@ -23,6 +23,11 @@ function TopNavPopupMenu({edge}: TopNavPopupMenuProps) {
             <IconButton
                 edge={edge}
                 color={"inherit"}
+                sx={(theme)=>({
+                    border: `1px solid ${theme.palette.primary.contrastText}`,
+                    borderRadius: '5px',
+                    height: '21px'
+                })}
                 aria-label={"menu"}
                 onClick={(e) => {
                     open(e.currentTarget);

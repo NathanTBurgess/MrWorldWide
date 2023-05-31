@@ -15,11 +15,11 @@ namespace MrWorldwide.WebApi
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .BindApplicationConfigurations()
                 .UseSerilog((ctx, lc) =>
                 {
                     lc.ReadFrom.Configuration(ctx.Configuration);
                 })
+                .BindApplicationConfigurations()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
