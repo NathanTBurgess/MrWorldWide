@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using MrWorldwide.WebApi.Data.Entities;
 using MrWorldwide.WebApi.Features.Authorization.Domain;
 using MrWorldwide.WebApi.Features.Authorization.Extensions;
+using MrWorldwide.WebApi.Features.Shared.Extensions;
 
 namespace MrWorldwide.WebApi.Features.Authorization.Components;
 
@@ -25,20 +26,20 @@ public class AuthorizationService
     public async Task<TokenResponse> AuthorizeGoogleSsoAsync(TokenRequest request)
     {
         var claimsIdentity = await _googleAuthenticationEngine.AuthenticateGoogleSsoAsync(request.IdToken);
-        var googleId = claimsIdentity.Claims.Single(x => x.Type == "google_id").Value;
+        var googleId = claimsIdentity.Claims.Single(x => x.Type == AppClaimTypes.GoogleId).Value;
         var user = await _userManager.FindByLoginAsync("Google", googleId);
         if (user == null)
         {
-            var name = claimsIdentity.Claims.Single(x => x.Type == "name").Value;
-            var email = claimsIdentity.Claims.Single(x => x.Type == "email").Value;
+            var name = claimsIdentity.Claims.Single(x => x.Type == AppClaimTypes.Name).Value;
+            var email = claimsIdentity.Claims.Single(x => x.Type == AppClaimTypes.Email).Value;
             user = new AppUser { Email = email, EmailConfirmed = true, UserName = email, Name = name };
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user,
                 new ExternalLoginInfo(new ClaimsPrincipal(claimsIdentity), "Google", googleId, "Google SSO"));
-            await _userManager.AddClaimsAsync(user, claimsIdentity.Claims.Append(new Claim("sub", user.Id)));
+            await _userManager.AddClaimsAsync(user, claimsIdentity.Claims.Append(new Claim(AppClaimTypes.Id, user.Id)));
         }
 
-        claimsIdentity.AddClaim(new Claim("sub", user.Id));
+        claimsIdentity.AddClaim(new Claim(AppClaimTypes.Id, user.Id));
         var jwt = _jwtEngine.WriteToken(claimsIdentity.Claims);
         var refreshToken = await _userManager.GenerateRefreshTokenAsync(user);
         return new TokenResponse
@@ -56,9 +57,7 @@ public class AuthorizationService
             throw new KeyNotFoundException("No user with that ID could be found");
         }
 
-        var canRefresh = !string.IsNullOrEmpty(user.RefreshToken) &&
-                         user.RefreshTokenExpiryTime > DateTime.UtcNow &&
-                         string.Equals(refreshRequest.RefreshToken, user.RefreshToken, StringComparison.Ordinal);
+        var canRefresh = user.ValidateRefreshAgainst(refreshRequest.RefreshToken);
         if (!canRefresh)
         {
             throw new InvalidOperationException("Invalid Refresh Token");

@@ -56,10 +56,10 @@ jobs:
             name: Setup PostgreSQL
             run: |
                 sudo systemctl start postgresql
-                sudo -u postgres psql -c "CREATE DATABASE testdb;"
+                sudo -u postgres psql -c "CREATE DATABASE mrworldwide_tests;"
                 sudo -u postgres psql -c "CREATE USER testuser WITH PASSWORD 'testpassword';"
                 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;"
-                echo "CONNECTION_STRINGS_DEFAULT_CONNECTION=Host=localhost;Database=testdb;Username=testuser;Password=testpassword" >> $GITHUB_ENV
+                echo "ConnectionStrings__DefaultConnection=Host=localhost;Database=mrworldwide_tests;Username=testuser;Password=testpassword" >> $GITHUB_ENV
         -
             name: Restore dependencies
             run: dotnet restore ./server/src/MrWorldwide.sln
@@ -69,7 +69,7 @@ jobs:
         -
             name: Test
             env:
-                ASPNETCORE_ENVIRONMENT: tests
+                ASPNETCORE_ENVIRONMENT: test
             run: dotnet test ./server/src/MrWorldwide.sln --configuration Release --no-build --verbosity normal
     deploy:
         name: Deploy Backend
