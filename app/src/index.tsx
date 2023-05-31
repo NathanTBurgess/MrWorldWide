@@ -16,6 +16,7 @@ import ConsoleLogger from "./utils/logging/console/ConsoleLogger";
 import {LogLevel} from "./utils/logging";
 import SeqLogger from "./utils/logging/seq/SeqLogger";
 import {isDevelopment} from "./utils/env";
+import DrawerProvider from "./utils/drawer/DrawerProvider";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const rootElement = document.getElementById("root");
@@ -40,9 +41,11 @@ root.render(
                 <CssBaseline/>
                 <BrowserRouter basename={baseUrl ?? undefined}>
                     <SnackbarProvider>
-                        <ModalProvider>
-                            <App/>
-                        </ModalProvider>
+                        <DrawerProvider>
+                            <ModalProvider>
+                                <App/>
+                            </ModalProvider>
+                        </DrawerProvider>
                     </SnackbarProvider>
                 </BrowserRouter>
             </ThemeProvider>

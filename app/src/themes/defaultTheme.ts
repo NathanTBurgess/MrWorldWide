@@ -79,7 +79,7 @@ const neutral = {
 const theme = createTheme({
     palette: {
         background: {
-            default: neutral["99"]
+            default: tertiary["95"]
         },
         primary: {
             main: primary["40"],
@@ -144,7 +144,7 @@ const theme = createTheme({
     },
     typography: {
         fontSize: 12,
-        fontFamily: "Arial",
+        fontFamily: "DM Sans",
         body1: {
             fontWeight: 300,
             fontSize: "14px",
