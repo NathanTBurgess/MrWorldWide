@@ -9,7 +9,7 @@ using TokenRequest = MrWorldwide.WebApi.Features.Authorization.Domain.TokenReque
 
 namespace MrWorldwide.WebApi.Controllers;
 [ApiController]
-[Route("v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
 public class AuthorizationsController : Controller
 {
     private const string RefreshCookieKey = "mrworldwide_auth";

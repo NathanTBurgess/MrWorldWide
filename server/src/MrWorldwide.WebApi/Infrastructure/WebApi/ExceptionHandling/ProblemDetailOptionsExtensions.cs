@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MrWorldwide.WebApi.Infrastructure.Utility;
-using MrWorldwide.WebApi.Infrastructure.WebApi.Exceptions;
 
 namespace MrWorldwide.WebApi.Infrastructure.WebApi.ExceptionHandling;
 
@@ -34,19 +33,25 @@ public static class ProblemDetailOptionsExtensions
                 return;
             }
 
+            mapping.Detail ??= string.Empty;
             var apiOptions = httpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>().Value;
-            context.ProblemDetails.Status = mapping.StatusCode;
-            context.ProblemDetails.Detail = mapping.Title;
-            if (apiOptions.ClientErrorMapping.TryGetValue(mapping.StatusCode, out var clientErrorData))
+            if (!apiOptions.ClientErrorMapping.TryGetValue(mapping.StatusCode, out var clientErrorData))
             {
-                context.ProblemDetails.Type = clientErrorData.Link;
-                context.ProblemDetails.Title = clientErrorData.Title;
+                clientErrorData = new ClientErrorData
+                {
+                    Link = mapping.Type,
+                    Title = mapping.Title
+                };
             }
 
-            if (context.ProblemDetails.Status == ServerIsTeapotException.StatusCode)
-            {
-                context.ProblemDetails.Type = ServerIsTeapotException.Type;
-            }
+            context.ProblemDetails.Status = mapping.StatusCode;
+            context.ProblemDetails.Title = mapping.Title ?? clientErrorData.Title;
+            context.ProblemDetails.Type = mapping.Type ?? clientErrorData.Link;
+            context.ProblemDetails.Detail = mapping.IncludeMessage
+                ? string.IsNullOrWhiteSpace(mapping.Detail) ? 
+                    exception.Message : 
+                    string.Join(". ", mapping.Detail, exception.Message)
+                : mapping.Detail;
 
             httpContext.Response.StatusCode = mapping.StatusCode;
         });

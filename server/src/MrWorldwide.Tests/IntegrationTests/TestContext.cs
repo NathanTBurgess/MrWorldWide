@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Hosting;
 using MrWorldwide.WebApi;
 
 namespace MrWorldwide.Tests.IntegrationTests;
-
+[SetUpFixture]
 public class TestContext
 {
     private static IntegrationTestsApplication _application;
@@ -30,6 +32,13 @@ public class TestContext
                 //overrides here
             });
             base.ConfigureWebHost(builder);
+        }
+
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environments.Development;
+            return Program.CreateHostBuilder(Array.Empty<string>())
+                .UseEnvironment(environment);
         }
     }
 }

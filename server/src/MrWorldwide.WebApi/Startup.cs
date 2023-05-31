@@ -1,17 +1,12 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using MrWorldwide.WebApi.Data;
 using MrWorldwide.WebApi.Data.Entities;
 using MrWorldwide.WebApi.Features;
-using MrWorldwide.WebApi.Features.Authorization;
 using MrWorldwide.WebApi.Infrastructure.Configuration;
 using MrWorldwide.WebApi.Infrastructure.WebApi.Authentication;
 using MrWorldwide.WebApi.Infrastructure.WebApi.ExceptionHandling;
-using MrWorldwide.WebApi.Infrastructure.WebApi.Routing;
 
 namespace MrWorldwide.WebApi
 {
@@ -72,7 +67,6 @@ namespace MrWorldwide.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHealthChecks("/health");
-                endpoints.MapBrewCoffee();
                 endpoints.MapControllers();
             });
         }

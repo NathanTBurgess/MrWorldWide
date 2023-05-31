@@ -12,7 +12,7 @@ public class ProducesProblemAttribute : Attribute, IExceptionMapping
     public bool IncludeMessage { get; set; }
     public string Detail { get; set; }
 
-    public ProducesProblemAttribute(int statusCode)
+    public ProducesProblemAttribute(int statusCode = StatusCodes.Status500InternalServerError)
     {
         StatusCode = statusCode;
     }

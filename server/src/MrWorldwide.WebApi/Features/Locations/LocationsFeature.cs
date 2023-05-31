@@ -6,6 +6,6 @@ public class LocationsFeature : FeatureRegistrar
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        throw new NotImplementedException();
+        return;
     }
 }

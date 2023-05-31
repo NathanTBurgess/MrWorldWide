@@ -7,7 +7,7 @@ namespace MrWorldwide.WebApi.Controllers;
 [AllowAnonymous]
 [Route("[controller]")]
 [ApiExplorerSettings(IgnoreApi = true)]
-public class OpenApiController
+public class OpenApiController : Controller
 {
     private readonly ISwaggerProvider _swaggerProvider;
 
