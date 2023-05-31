@@ -2,7 +2,7 @@
 
 namespace MrWorldwide.WebApi.Infrastructure.Configuration;
 
-public static  class ServiceCollectionExtensions
+public static  class ConfigurationServiceCollectionExtensions
 {
     public static OptionsBuilder<TOptions> BindOptions<TOptions>(this IServiceCollection services,
         string configSectionName, Action<NestedOptionsBuilder> configureNestedOptions = null)
