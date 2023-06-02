@@ -37,7 +37,7 @@ public class GoogleAuthenticationEngine : IGoogleAuthenticationEngine
                 "Google SSO credentials could not be validated. See inner exception for details", ex);
         }
         
-        if (!_configuration.ValidEmails.Contains(payload.Email))
+        if (!_configuration.ValidEmails.Contains(payload.Email.ToLower()))
         {
             throw new UnauthorizedAccessException("User is not authorized.");
         }
