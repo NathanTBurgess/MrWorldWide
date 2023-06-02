@@ -123,7 +123,7 @@ jobs:
                 container-name: ${{ env.CONTAINER_NAME }}
                 image: ${{ steps.push-image.outputs.image }}
                 environment-variables: |
-                    Jwt:Secret=${{ secrets.JWT_SECRET }}
+                    Authorization:Jwt:Secret=${{ secrets.JWT_SECRET }}
                     ConnectionStrings:DefaultConnection=${{ secrets.AWS_POSTGRES_CONNECTION_STRING }}
         -
             name: Deploy Amazon ECS task definition
