@@ -1,4 +1,7 @@
-﻿namespace MrWorldwide.Google.DataModel;
+﻿using System.Collections.Immutable;
+using System.Reflection;
+
+namespace MrWorldwide.Google.DataModel;
 
 public readonly record struct PlaceType(string Name, string TypeId);
 
@@ -99,4 +102,13 @@ public static class PlaceTypes
     public static readonly PlaceType University = new("University", "university");
     public static readonly PlaceType VeterinaryCare = new("Veterinary Care", "veterinary_care");
     public static readonly PlaceType Zoo = new("Zoo", "zoo");
+
+    public static ImmutableHashSet<PlaceType> All { get; } = typeof(PlaceTypes)
+        .GetFields(BindingFlags.Static)
+        .Where(x=>x.FieldType == typeof(PlaceType))
+        .Select(x=>x.GetValue(null))
+        .Cast<PlaceType>()
+        .ToImmutableHashSet();
+
+    public static ImmutableHashSet<string> TypeIds { get; } = All.Select(x => x.TypeId).ToImmutableHashSet();
 }

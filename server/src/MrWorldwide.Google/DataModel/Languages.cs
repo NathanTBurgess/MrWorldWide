@@ -2,7 +2,7 @@
 
 namespace MrWorldwide.Google.DataModel;
 
-public class Languages
+public static class Languages
 {
     public static Language English = new("en", "English");
 

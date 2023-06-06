@@ -39,6 +39,9 @@ public class PlacesAutoCompleteParameters
     /// </remarks>
     [Language]
     public string Language { get; set; }
+    [LimitCount(5)]
+    [PlaceTypes]
+    public ICollection<string> Types { get; set; }
     /// <summary>
     /// A random string which identifies an autocomplete session for billing purposes.
     /// </summary>
