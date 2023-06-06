@@ -43,9 +43,10 @@ public class TestContext
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            var jwtSecret = SecretGenerator.GenerateSecret();
             builder.ConfigureTestServices(services =>
             {
-                services.Configure<JwtOptions>(opt => opt.Secret = SecretGenerator.GenerateSecret());
+                services.Configure<JwtOptions>(opt => opt.Secret = jwtSecret);
                 services.Configure<GoogleOptions>(opt => opt.ValidEmails = new List<string>
                 {
                     TestAdmin.Email,

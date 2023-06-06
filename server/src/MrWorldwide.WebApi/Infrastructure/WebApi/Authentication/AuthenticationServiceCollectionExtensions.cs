@@ -10,8 +10,8 @@ public static class AuthenticationServiceCollectionExtensions
         services.AddAuthentication(AuthenticationDefaults.DefaultScheme)
             .AddJwtBearer(AuthenticationDefaults.DefaultScheme)
             .AddJwtBearer(AuthenticationDefaults.RefreshScheme);
-        services.AddTransient<IConfigureOptions<JwtBearerOptions>, ConfigureAllJwtBearerOptions>();
-        services.AddTransient<IConfigureOptions<JwtBearerOptions>, ConfigureRefreshJwtBearerOptions>();
+        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureAllJwtBearerOptions>();
+        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureRefreshJwtBearerOptions>();
         return services;
     }
 }

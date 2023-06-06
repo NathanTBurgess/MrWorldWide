@@ -6,7 +6,7 @@ using MrWorldwide.WebApi.Features.Authorization;
 
 namespace MrWorldwide.WebApi.Infrastructure.WebApi.Authentication;
 
-public class ConfigureAllJwtBearerOptions : IConfigureOptions<JwtBearerOptions>
+public class ConfigureAllJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly IOptionsMonitor<JwtOptions> _appSettings;
 
@@ -22,4 +22,7 @@ public class ConfigureAllJwtBearerOptions : IConfigureOptions<JwtBearerOptions>
         options.TokenValidationParameters.IssuerSigningKey =
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.Secret));
     }
+
+    public void Configure(string name, JwtBearerOptions options)
+        => Configure(options);
 }

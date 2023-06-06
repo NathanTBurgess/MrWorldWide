@@ -22,11 +22,11 @@ public class OnPostGoogle : HttpIntegrationTest
     {
         var idTokenFactory = Services.GetRequiredService<GoogleIdTokenFactory>();
         var idToken = idTokenFactory.GenerateFakeToken(TestUserToCreate.GenerateGoogleClaims());
-        _response = await Client.PostAsJsonAsync("authorizations/google", new TokenRequest { IdToken = idToken });
+        var client = TestContext.TestServer.CreateClient();
+        _response = await client.PostAsJsonAsync("authorizations/google", new TokenRequest { IdToken = idToken });
         var scopeFactory = Services.GetRequiredService<IServiceScopeFactory>();
         _scope = scopeFactory.CreateAsyncScope();
         _userManager = _scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-
     }
     [OneTimeTearDown]
     public async Task TearDownTestScope()

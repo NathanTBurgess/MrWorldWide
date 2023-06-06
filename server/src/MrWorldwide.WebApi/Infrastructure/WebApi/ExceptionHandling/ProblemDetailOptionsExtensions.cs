@@ -57,7 +57,10 @@ public static class ProblemDetailOptionsExtensions
         });
     }
 
-    public static void IncludeExceptionDetails(this ProblemDetailsOptions options, bool alwaysIncludeStackTrace = false)
+    public static void IncludeExceptionDetails(this ProblemDetailsOptions options,
+        Func<bool> includeStackTrace)
+        => options.IncludeExceptionDetails((_) => includeStackTrace());
+    public static void IncludeExceptionDetails(this ProblemDetailsOptions options, Func<IServiceProvider, bool> includeStackTrace = null)
     {
         options.Configure(context =>
         {
@@ -72,9 +75,8 @@ public static class ProblemDetailOptionsExtensions
                 return;
             }
 
-            var environment = httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-            var includeStackTrace = alwaysIncludeStackTrace || environment.IsDevelopment();
-            context.ProblemDetails.AddErrorDetails(exception, includeStackTrace);
+            var shouldIncludeStackTrace = includeStackTrace?.Invoke(context.HttpContext.RequestServices) ?? false;
+            context.ProblemDetails.AddErrorDetails(exception, shouldIncludeStackTrace);
         });
     }
 

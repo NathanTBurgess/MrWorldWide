@@ -8,7 +8,8 @@ public class Health : HttpIntegrationTest
     [Test]
     public async Task ProducesProblem()
     {
-        var response = await Client.GetAsync("health");
+        var client = TestContext.TestServer.CreateClient();
+        var response = await client.GetAsync("health");
         await response.ShouldBeSuccessAsync();
     }
 }

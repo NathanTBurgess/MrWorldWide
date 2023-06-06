@@ -11,10 +11,17 @@ namespace MrWorldwide.Tests.IntegrationTests.Controllers.Coffee;
 [TestFixture]
 public class OnGet : HttpIntegrationTest
 {
+    private HttpClient _client;
+
+    [SetUp]
+    public void CreateClient()
+    {
+        _client = TestContext.TestServer.CreateClient();
+    }
     [Test]
     public async Task ProducesProblem()
     {
-        var response = await Client.GetAsync("coffee");
+        var response = await _client.GetAsync("coffee");
         await response.ShouldProduceProblemAsync(details =>
         {
             details.Status.ShouldBe(StatusCodes.Status418ImATeapot);
@@ -27,7 +34,7 @@ public class OnGet : HttpIntegrationTest
     [Test]
     public async Task RepliesWithVerbosityHeader_False_If_Not_Provided()
     {
-        var response = await Client.GetAsync("coffee");
+        var response = await _client.GetAsync("coffee");
         response.ShouldSatisfyAllConditions(
             x => x.Headers.Contains(ExceptionHandlingDefaults.VerboseExceptionHeader).ShouldBeTrue(),
             x => x.Headers.GetValues(ExceptionHandlingDefaults.VerboseExceptionHeader).ShouldHaveSingleItem(),
@@ -40,7 +47,7 @@ public class OnGet : HttpIntegrationTest
     public async Task RepliesWithVerbosityHeader_That_Matches_Request(string getVerboseErrors)
     {
         var response =
-            await Client.WithDefaultHeader(ExceptionHandlingDefaults.VerboseExceptionHeader, getVerboseErrors)
+            await _client.WithDefaultHeader(ExceptionHandlingDefaults.VerboseExceptionHeader, getVerboseErrors)
                 .GetAsync("coffee");
         response.ShouldSatisfyAllConditions(
             x => x.Headers.Contains(ExceptionHandlingDefaults.VerboseExceptionHeader).ShouldBeTrue(),
@@ -52,7 +59,7 @@ public class OnGet : HttpIntegrationTest
     [Test]
     public async Task ProvidesExceptionDetails_WithRequest()
     {
-        var response = await Client.WithExceptionDetails().GetAsync("coffee");
+        var response = await _client.WithExceptionDetails().GetAsync("coffee");
         await response.ShouldProduceProblemAsync(details =>
         {
             details.TryGetErrorDetails(out var errorDetails).ShouldBeTrue();
@@ -64,7 +71,7 @@ public class OnGet : HttpIntegrationTest
     [Test]
     public async Task DoesNotProvideErrorDetails_WithoutRequest()
     {
-        var response = await Client.WithoutExceptionDetails().GetAsync("coffee");
+        var response = await _client.WithoutExceptionDetails().GetAsync("coffee");
         await response.ShouldProduceProblemAsync(details =>
         {
             details.TryGetErrorDetails(out _).ShouldBeFalse();

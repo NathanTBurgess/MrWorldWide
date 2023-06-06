@@ -5,6 +5,7 @@ using MrWorldwide.WebApi.Data;
 using MrWorldwide.WebApi.Data.Entities;
 using MrWorldwide.WebApi.Features;
 using MrWorldwide.WebApi.Infrastructure.Configuration;
+using MrWorldwide.WebApi.Infrastructure.Utility;
 using MrWorldwide.WebApi.Infrastructure.WebApi.Authentication;
 using MrWorldwide.WebApi.Infrastructure.WebApi.ExceptionHandling;
 
@@ -35,7 +36,7 @@ namespace MrWorldwide.WebApi
             services.AddProblemDetails(x =>
             {
                 x.MapExceptions();
-                x.IncludeExceptionDetails();
+                x.IncludeExceptionDetails(() => _environment.IsDevelopment() || _environment.IsTesting());
             });
             services.AddSwaggerGen();
             services.AddControllers();
