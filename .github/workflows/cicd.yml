@@ -59,6 +59,7 @@ jobs:
             name: Test
             env:
                 ASPNETCORE_ENVIRONMENT: tests
+                Authorization__Google__MapsApiKey: ${{ secrets.GOOGLE_MAPS_API_KEY }}
             run: dotnet test ./server/src/MrWorldwide.sln --configuration Release --no-build --verbosity normal
     build-frontend:
         name: Build Frontend

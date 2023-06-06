@@ -61,7 +61,7 @@ public class TestContext
 
         protected override IHostBuilder CreateHostBuilder()
         {
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "test";
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environments.Development;
             return Program.CreateHostBuilder(Array.Empty<string>())
                 .UseEnvironment(environment);
         }

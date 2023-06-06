@@ -42,4 +42,8 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MrWorldwide.Google\MrWorldwide.Google.csproj" />
+    </ItemGroup>
+
 </Project>

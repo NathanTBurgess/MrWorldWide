@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\..\.github\workflows\frontend.yml = ..\..\.github\workflows\frontend.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrWorldwide.Google", "MrWorldwide.Google\MrWorldwide.Google.csproj", "{290F6A63-3CB5-4FD4-A23A-F6F56EC7FCAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{FF83F8AD-0066-4A88-9FED-CF0C20C796E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF83F8AD-0066-4A88-9FED-CF0C20C796E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF83F8AD-0066-4A88-9FED-CF0C20C796E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{290F6A63-3CB5-4FD4-A23A-F6F56EC7FCAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{290F6A63-3CB5-4FD4-A23A-F6F56EC7FCAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{290F6A63-3CB5-4FD4-A23A-F6F56EC7FCAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{290F6A63-3CB5-4FD4-A23A-F6F56EC7FCAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

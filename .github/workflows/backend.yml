@@ -70,6 +70,7 @@ jobs:
             name: Test
             env:
                 ASPNETCORE_ENVIRONMENT: test
+                Authorization__Google__MapsApiKey: ${{ secrets.GOOGLE_MAPS_API_KEY }}
             run: dotnet test ./server/src/MrWorldwide.sln --configuration Release --no-build --verbosity normal
     deploy:
         name: Deploy Backend
@@ -124,6 +125,7 @@ jobs:
                 image: ${{ steps.push-image.outputs.image }}
                 environment-variables: |
                     Jwt:Secret=${{ secrets.JWT_SECRET }}
+                    Authorization:Google:MapsApiKey=${{ secrets.GOOGLE_MAPS_API_KEY }}
                     ConnectionStrings:DefaultConnection=${{ secrets.AWS_POSTGRES_CONNECTION_STRING }}
         -
             name: Deploy Amazon ECS task definition
